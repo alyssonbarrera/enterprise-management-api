@@ -1,0 +1,17 @@
+*.env
+*.pyc
+*.pyo
+__pycache__/
+
+cam_challenge_env/
+
+.DS_Store
+Thumbs.db
+
+*.log
+
+/staticfiles/
+/media/
+/build/
+/dist/
+/node_modules/

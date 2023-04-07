@@ -1,0 +1,15 @@
+from src.modules.departments.repositories.departments_repository import DepartmentsRepository
+
+class GetAllDepartmentsUseCase:
+    def __init__(self, departments_repository: DepartmentsRepository):
+        self.departments_repository = departments_repository
+
+    def execute(self, page=1):
+        departments = self.departments_repository.get_all(page)
+        
+        department_list = []
+
+        for department in departments:
+            department_list.append(department.to_dict())
+                
+        return department_list
