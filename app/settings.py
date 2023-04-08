@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
-from pathlib import Path
 import os
 import sys
+from pathlib import Path
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -52,7 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'src.shared.infra.http.middlewares.request_body_to_json.RequestBodyToJson'
+    'src.shared.infra.http.middlewares.request_body_to_json.RequestBodyToJson',
 ]
 
 ROOT_URLCONF = 'app.urls'

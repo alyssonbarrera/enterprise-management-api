@@ -10,7 +10,7 @@ class RequestBodyToJson:
             try:
                 request.json = json.loads(request.body.decode('utf-8'))
             except ValueError:
-                return HttpResponse({'message': 'Formato inválido'}, status=400)
+                return HttpResponse({'message': 'Invalid format'}, status=400)
 
         response = self.get_response(request)
 

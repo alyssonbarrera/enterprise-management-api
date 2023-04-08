@@ -1,14 +1,16 @@
 from django.http import JsonResponse
 from src.shared.errors.AppError import AppError
+from django.views.decorators.http import require_http_methods
 from src.modules.departments.use_cases.get_department.make_get_department_use_case import make_get_department_use_case
 
+@require_http_methods(['GET'])
 def get_department_controller(request, id):
     try:
         use_case = make_get_department_use_case()
         department = use_case.execute(id)
 
         response = {
-            'department': department.to_dict(),
+            'department': department,
         }
 
         return JsonResponse(response, status=200)

@@ -13,4 +13,4 @@ class CreateDepartmentUseCase:
 
         department = self.departments_repository.create(data)
         
-        return department
+        return department.to_dict()

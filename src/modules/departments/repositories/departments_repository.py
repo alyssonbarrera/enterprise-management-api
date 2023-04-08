@@ -8,20 +8,14 @@ class DepartmentsRepository:
         department = Department(**data)
         department.save()
 
-        department_dict = {}
-
-        for key, value in department.__dict__.items():
-            if key != '_state':
-                department_dict[key] = value
-            
-        return department_dict
+        return department
     
     def get(self, id):
         try:
-            return Department.objects.get(id=id)           
+            return Department.objects.get(id=id)
         except ObjectDoesNotExist:
             return None
-    
+
     def get_all(self, page):
         page = int(page)
         departments = Department.objects.raw(
@@ -31,7 +25,7 @@ class DepartmentsRepository:
         department_list = list(departments)
 
         return department_list
-    
+
     def search(self, name):
         departments = Department.objects.filter(name__icontains=name).order_by('created_at')
 

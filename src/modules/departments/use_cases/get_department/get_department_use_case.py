@@ -11,4 +11,4 @@ class GetDepartmentUseCase:
         if not department:
             raise AppError('Department not found', 404)
         
-        return department
+        return department.to_dict()

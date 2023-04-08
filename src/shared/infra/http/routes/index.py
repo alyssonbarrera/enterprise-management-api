@@ -1,7 +1,9 @@
 from django.urls import path
-from src.shared.infra.http.routes.departments_routes import departmentsRoutes
 from django.urls import include
+from .departments_routes import departments_routes
+from .employees_routes import employees_routes
 
 urlpatterns = [
-    path('departments/', include(departmentsRoutes())),
+    path('departments/', include(departments_routes)),
+    path('employees/', include(employees_routes)),
 ]

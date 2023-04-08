@@ -1,25 +1,31 @@
 from uuid import UUID
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
-from src.modules.departments.use_cases.create_department.create_department_use_case import CreateDepartmentUseCase
-from src.modules.departments.use_cases.create_department.make_create_department_use_case import make_create_department_use_case
+from ...create_department.create_department_use_case import CreateDepartmentUseCase
+from ....repositories.departments_repository import DepartmentsRepository
 
-class DepartmentUseCaseTest(TestCase):
+class CreateDepartmentUseCaseTest(TestCase):
     def setUp(self):
-        self.create_department_use_case = make_create_department_use_case()
+        self.departments_repository = DepartmentsRepository()
+        self.use_case = CreateDepartmentUseCase(self.departments_repository)
 
     def test_create_department(self):
-        data = {'name': 'Department 1'}
-        department = self.create_department_use_case.execute(data)
+        data = {
+            'name': 'Department Test',
+            'description': 'Department Test Description',
+        }
+
+        department = self.use_case.execute(data)
+        
         self.assertTrue(isinstance(department['id'], UUID))
-        self.assertEqual(department['name'], "Department 1")
+        self.assertEqual(department['name'], "Department Test")
         self.assertTrue(department['created_at'] is not None)
         self.assertTrue(department['updated_at'] is None)
 
     def test_create_department_with_name_already_exists(self):
-        data = {'name': 'Department 1'}
+        data = {'name': 'Department Wrong'}
         with self.assertRaises(Exception) as context:
-            self.create_department_use_case.execute(data)
-            self.create_department_use_case.execute(data)
+            self.use_case.execute(data)
+            self.use_case.execute(data)
 
         self.assertIsInstance(context.exception, AppError)

@@ -12,12 +12,15 @@ class UpdateDepartmentUseCase:
         if not department:
             raise AppError('Department not found', 404)
 
-        departmentAlreadyExists = self.departments_repository.get_by_name(data['name'])
+        if 'name' in data:
+            department_with_same_name = self.departments_repository.get_by_name(data['name'])
 
-        if departmentAlreadyExists:
-            raise AppError('Department already exists', 409)
+            if department_with_same_name:
+                raise AppError('Department already exists', 409)
+            
 
         data['updated_at'] = timezone.now()
+        
         department = self.departments_repository.update(id, data)
         
         return department
