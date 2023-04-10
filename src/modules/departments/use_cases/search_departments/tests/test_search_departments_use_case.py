@@ -15,11 +15,11 @@ class SearchDepartmentsUseCaseTest(TestCase):
         
         create_department = self.departments_repository.create(data).to_dict()
        
-        department = self.use_case.execute(create_department['name'])
+        department = self.use_case.execute(create_department['name'], 1)
 
         self.assertListEqual(department, [create_department])
         self.assertEqual(department[0]['id'], create_department['id'])
 
     def test_search_departments_if_not_exists(self):
-        department = self.use_case.execute('Department 1')
+        department = self.use_case.execute('Department 1', 1)
         self.assertListEqual(department, [])

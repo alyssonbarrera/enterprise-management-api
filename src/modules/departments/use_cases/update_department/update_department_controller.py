@@ -9,6 +9,9 @@ from src.modules.departments.use_cases.update_department.make_update_department_
 @require_http_methods(['PUT'])
 def update_department_controller(request, id):
     try:
+        if not id:
+            return JsonResponse({'message': 'Id is required'}, status=400)
+        
         data = validator(department_validation_schema, request.json, update=True)
 
         use_case = make_update_department_use_case()

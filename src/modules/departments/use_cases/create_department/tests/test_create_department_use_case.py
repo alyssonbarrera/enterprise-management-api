@@ -1,6 +1,7 @@
 from uuid import UUID
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
+from src.utils.error_messages import DEPARTMENT_ALREADY_EXISTS
 from ...create_department.create_department_use_case import CreateDepartmentUseCase
 from ....repositories.departments_repository import DepartmentsRepository
 
@@ -29,3 +30,4 @@ class CreateDepartmentUseCaseTest(TestCase):
             self.use_case.execute(data)
 
         self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.message, DEPARTMENT_ALREADY_EXISTS)

@@ -17,31 +17,33 @@ class DepartmentsRepository:
             return None
 
     def get_all(self, page):
-        page = int(page)
         departments = Department.objects.raw(
             f'SELECT * FROM src_department LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
         )
 
-        department_list = list(departments)
+        departments_list = list(departments)
 
-        return department_list
+        return departments_list
 
-    def search(self, name):
-        departments = Department.objects.filter(name__icontains=name).order_by('created_at')
+    def search(self, name, page):
+        departments = Department.objects.raw(
+            f'SELECT * FROM src_department WHERE name LIKE "%{name}%" LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
+        )
 
-        departments_list = []
-
-        for department in departments:
-            department_dict = {}
-
-            for key, value in department.__dict__.items():
-                if key != '_state':
-                    department_dict[key] = value
-
-            departments_list.append(department_dict)
+        departments_list = list(departments)
 
         return departments_list
     
+    def has_active_employees(self, id):
+        department = Department.objects.get(id=id)
+
+        return department.has_active_employees()
+    
+    def has_active_projects(self, id):
+        department = Department.objects.get(id=id)
+
+        return department.has_active_projects()
+
     def get_by_name(self, name):
         department = Department.objects.filter(name=name)
         
@@ -55,15 +57,7 @@ class DepartmentsRepository:
 
         department.save()
 
-        department_dict = {}
-
-        for key, value in department.__dict__.items():
-            if key != '_state':
-                department_dict[key] = value
-
-        return department_dict
+        return department
     
-    def delete(self, id):
-        department = Department.objects.get(id=id)
-        
-        department.delete()
+    def delete(self, department):        
+        return department.delete()

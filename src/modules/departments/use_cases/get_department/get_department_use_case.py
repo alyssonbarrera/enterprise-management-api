@@ -1,4 +1,5 @@
 from src.shared.errors.AppError import AppError
+from src.utils.error_messages import DEPARTMENT_NOT_FOUND
 from src.modules.departments.repositories.departments_repository import DepartmentsRepository
 
 class GetDepartmentUseCase:
@@ -9,6 +10,6 @@ class GetDepartmentUseCase:
         department = self.departments_repository.get(id)
 
         if not department:
-            raise AppError('Department not found', 404)
+            raise AppError(DEPARTMENT_NOT_FOUND, 404)
         
         return department.to_dict()

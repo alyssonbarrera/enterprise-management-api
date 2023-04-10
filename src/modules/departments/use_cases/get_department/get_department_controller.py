@@ -6,6 +6,9 @@ from src.modules.departments.use_cases.get_department.make_get_department_use_ca
 @require_http_methods(['GET'])
 def get_department_controller(request, id):
     try:
+        if not id:
+            return JsonResponse({'message': 'Id is required'}, status=400)
+        
         use_case = make_get_department_use_case()
         department = use_case.execute(id)
 

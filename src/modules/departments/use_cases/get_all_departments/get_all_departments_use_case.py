@@ -6,10 +6,10 @@ class GetAllDepartmentsUseCase:
 
     def execute(self, page=1):
         departments = self.departments_repository.get_all(page)
-        
-        department_list = []
+
+        departments_list = []
 
         for department in departments:
-            department_list.append(department.to_dict())
+            departments_list.append(department.to_dict())
                 
-        return department_list
+        return departments_list

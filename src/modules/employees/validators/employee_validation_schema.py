@@ -52,4 +52,10 @@ employee_validation_schema = {
         'required': True,
         'empty': False,
     },
+
+    'active': {
+        'type': 'boolean',
+        'required': False,
+        'empty': False,
+    }
 }

@@ -1,7 +1,9 @@
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
+from unittest.mock import patch
 from ....repositories.departments_repository import DepartmentsRepository
 from ...delete_department.delete_department_use_case import DeleteDepartmentUseCase
+from src.utils.error_messages import DEPARTMENT_NOT_FOUND, DEPARTMENT_HAS_ACTIVE_EMPLOYEES, DEPARTMENT_HAS_ACTIVE_PROJECTS
 
 class DeleteDepartmentUseCaseTest(TestCase):
     def setUp(self):
@@ -22,8 +24,50 @@ class DeleteDepartmentUseCaseTest(TestCase):
         
         self.assertEqual(get_department, None)
 
-    def test_delete_department_with_id_not_exists(self):
+    def test_delete_nonexistent_department(self):
+        data = {
+            'name': 'Department Test',
+            'description': 'Department Test Description',
+        }
+        
+        department = self.departments_repository.create(data).to_dict()
+
+        self.use_case.execute(department['id'])
+
         with self.assertRaises(Exception) as context:
-            self.use_case.execute('00000000-0000-0000-0000-000000000000')
+            self.use_case.execute(department['id'])
 
         self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.message, DEPARTMENT_NOT_FOUND)
+
+    def test_delete_department_with_active_employees(self):
+        data = {
+            'name': 'Department Test',
+            'description': 'Department Test Description',
+        }
+        
+        department = self.departments_repository.create(data)
+        department_dict = department.to_dict()
+
+        with patch.object(self.departments_repository, 'has_active_employees', return_value=True):
+            with self.assertRaises(Exception) as context:
+                self.use_case.execute(department_dict['id'])
+
+        self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.message, DEPARTMENT_HAS_ACTIVE_EMPLOYEES)
+
+    def test_delete_department_with_active_projects(self):
+        data = {
+            'name': 'Department Test',
+            'description': 'Department Test Description',
+        }
+        
+        department = self.departments_repository.create(data)
+        department_dict = department.to_dict()
+
+        with patch.object(self.departments_repository, 'has_active_projects', return_value=True):
+            with self.assertRaises(Exception) as context:
+                self.use_case.execute(department_dict['id'])
+
+        self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.message, DEPARTMENT_HAS_ACTIVE_PROJECTS)

@@ -1,5 +1,6 @@
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
+from src.utils.error_messages import DEPARTMENT_NOT_FOUND
 from ....repositories.departments_repository import DepartmentsRepository
 from ...get_department.get_department_use_case import GetDepartmentUseCase
 
@@ -24,3 +25,4 @@ class GetDepartmentUseCaseTest(TestCase):
         with self.assertRaises(Exception) as context:
             self.use_case.execute('00000000-0000-0000-0000-000000000000')
         self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.message, DEPARTMENT_NOT_FOUND)

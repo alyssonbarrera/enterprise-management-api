@@ -1,5 +1,6 @@
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
+from src.utils.error_messages import DEPARTMENT_NOT_FOUND ,DEPARTMENT_ALREADY_EXISTS
 from ....repositories.departments_repository import DepartmentsRepository
 from ...update_department.update_department_use_case import UpdateDepartmentUseCase
 
@@ -34,6 +35,7 @@ class UpdateDepartmentUseCaseTest(TestCase):
             self.use_case.execute('00000000-0000-0000-0000-000000000000', data)
 
         self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.message, DEPARTMENT_NOT_FOUND)
 
     def test_update_department_with_name_already_exists(self):
         data_one = {
@@ -59,3 +61,4 @@ class UpdateDepartmentUseCaseTest(TestCase):
             self.use_case.execute(create_department_two['id'], data_update)
 
         self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.message, DEPARTMENT_ALREADY_EXISTS)

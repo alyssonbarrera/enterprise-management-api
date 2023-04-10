@@ -1,4 +1,5 @@
 from src.shared.errors.AppError import AppError
+from src.utils.error_messages import DEPARTMENT_ALREADY_EXISTS
 from src.modules.departments.repositories.departments_repository import DepartmentsRepository
 
 class CreateDepartmentUseCase:
@@ -9,7 +10,7 @@ class CreateDepartmentUseCase:
         departmentAlreadyExists = self.departments_repository.get_by_name(data['name'])
 
         if departmentAlreadyExists:
-            raise AppError('Department already exists', 409)
+            raise AppError(DEPARTMENT_ALREADY_EXISTS, 409)
 
         department = self.departments_repository.create(data)
         

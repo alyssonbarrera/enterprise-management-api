@@ -6,8 +6,10 @@ from src.modules.departments.use_cases.search_departments.make_search_department
 def search_departments_controller(request):
     try:
         query = request.GET.get('query')
+        page = request.GET.get('page', 1) or 1
+
         use_case = make_search_departments_use_case()
-        departments = use_case.execute(query)
+        departments = use_case.execute(query, page)
 
         response = {
             'departments': departments

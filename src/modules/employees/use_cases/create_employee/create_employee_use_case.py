@@ -1,6 +1,7 @@
 from src.shared.errors.AppError import AppError
-from src.shared.errors.DuplicateEntryError import DuplicateEntryError
+from src.utils.error_messages import DEPARTMENT_NOT_FOUND
 from ...repositories.employees_repository import EmployeesRepository
+from src.shared.errors.DuplicateEntryError import DuplicateEntryError
 from ....departments.repositories.departments_repository import DepartmentsRepository
 
 class CreateEmployeeUseCase:
@@ -16,7 +17,7 @@ class CreateEmployeeUseCase:
         department = self.departments_repository.get(data['department'])
 
         if not department:
-            raise AppError('Department not found', 404)
+            raise AppError(DEPARTMENT_NOT_FOUND, 404)
         
         data['department'] = department
 

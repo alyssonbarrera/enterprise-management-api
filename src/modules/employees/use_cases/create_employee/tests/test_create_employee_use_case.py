@@ -1,6 +1,7 @@
 from uuid import UUID
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
+from src.utils.error_messages import EMPLOYEE_DUPLICATE_ENTRY , DEPARTMENT_NOT_FOUND
 from src.modules.employees.repositories.employees_repository import EmployeesRepository
 from src.modules.departments.repositories.departments_repository import DepartmentsRepository
 from src.modules.employees.use_cases.create_employee.create_employee_use_case import CreateEmployeeUseCase
@@ -28,7 +29,7 @@ class CreateEmployeeUseCaseTest(TestCase):
             'cpf': '12345678901',
             'rg': '123456789',
             'gender': 'Male',
-            'birth_date': '1990-01-01',
+            'birth_date': '01/01/2001',
             'has_driving_license': True,
             'salary': 1000.00,
             'weekly_workload': 40,
@@ -49,7 +50,7 @@ class CreateEmployeeUseCaseTest(TestCase):
             'cpf': '12345678901',
             'rg': '123456789',
             'gender': 'Male',
-            'birth_date': '1990-01-01',
+            'birth_date': '01/01/2001',
             'has_driving_license': True,
             'salary': 1000.00,
             'weekly_workload': 40,
@@ -59,7 +60,7 @@ class CreateEmployeeUseCaseTest(TestCase):
         with self.assertRaises(Exception) as context:
             self.use_case.execute(employee_data)
         self.assertIsInstance(context.exception, AppError)
-        self.assertEqual(context.exception.message, 'Department not found')
+        self.assertEqual(context.exception.message, DEPARTMENT_NOT_FOUND)
 
     def test_create_employee_duplicate(self):
         department_data = {
@@ -75,7 +76,7 @@ class CreateEmployeeUseCaseTest(TestCase):
             'cpf': '12345678901',
             'rg': '123456789',
             'gender': 'Male',
-            'birth_date': '1990-01-01',
+            'birth_date': '01/01/2001',
             'has_driving_license': True,
             'salary': 1000.00,
             'weekly_workload': 40,
@@ -87,7 +88,7 @@ class CreateEmployeeUseCaseTest(TestCase):
             'cpf': '12345678901',
             'rg': '123456789',
             'gender': 'Male',
-            'birth_date': '1990-01-01',
+            'birth_date': '01/01/2001',
             'has_driving_license': True,
             'salary': 1000.00,
             'weekly_workload': 40,
@@ -99,4 +100,4 @@ class CreateEmployeeUseCaseTest(TestCase):
         with self.assertRaises(Exception) as context:
             self.use_case.execute(employee_data_2)
         self.assertIsInstance(context.exception, AppError)
-        self.assertEqual(context.exception.message, 'Employee already exists')
+        self.assertEqual(context.exception.message, EMPLOYEE_DUPLICATE_ENTRY)

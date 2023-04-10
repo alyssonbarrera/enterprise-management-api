@@ -18,7 +18,7 @@ class CreateEmployeeControllerTest(TestCase):
             'cpf': '12345678901',
             'rg': '123456789',
             'gender': 'Male',
-            'birth_date': '1990-01-01',
+            'birth_date': '01/01/2001',
             'has_driving_license': True,
             'salary': 1000.00,
             'weekly_workload': 40,

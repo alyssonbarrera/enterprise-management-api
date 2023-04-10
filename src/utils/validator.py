@@ -2,7 +2,7 @@ from cerberus import Validator
 from src.shared.errors.AppValidatorError import AppValidatorError
 
 def validator(schema, data, update=False):
-    if update and len(data) == 0:
+    if len(data) == 0:
         raise AppValidatorError('No data to update')
     
     validator = Validator(schema)

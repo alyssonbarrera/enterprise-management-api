@@ -1,5 +1,6 @@
 from django.utils import timezone
 from src.shared.errors.AppError import AppError
+from src.utils.error_messages import DEPARTMENT_NOT_FOUND, DEPARTMENT_ALREADY_EXISTS
 from src.modules.departments.repositories.departments_repository import DepartmentsRepository
 
 class UpdateDepartmentUseCase:
@@ -10,17 +11,17 @@ class UpdateDepartmentUseCase:
         department = self.departments_repository.get(id)
 
         if not department:
-            raise AppError('Department not found', 404)
+            raise AppError(DEPARTMENT_NOT_FOUND, 404)
 
         if 'name' in data:
             department_with_same_name = self.departments_repository.get_by_name(data['name'])
 
             if department_with_same_name:
-                raise AppError('Department already exists', 409)
+                raise AppError(DEPARTMENT_ALREADY_EXISTS, 409)
             
 
         data['updated_at'] = timezone.now()
         
         department = self.departments_repository.update(id, data)
         
-        return department
+        return department.to_dict()

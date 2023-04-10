@@ -13,7 +13,7 @@ class DeleteDepartmentControllerTest(TestCase):
         
         create_response = self.client.post('/v1/departments/create', data, content_type='application/json').json()
 
-        delete_response = self.client.delete('/v1/departments/delete/' + create_response['department']['id'])
+        delete_response = self.client.delete(f'/v1/departments/delete/' + create_response['department']['id'])
 
         self.assertEqual(delete_response.status_code, 204)
 
