@@ -4,7 +4,7 @@ from src.shared.errors.AppError import AppError
 from django.views.decorators.http import require_http_methods
 from src.shared.errors.AppValidatorError import AppValidatorError
 from .make_create_project_use_case import make_create_project_use_case
-from ..validators.project_validation_schema import project_validation_schema
+from ...validators.project_validation_schema import project_validation_schema
 
 
 @require_http_methods(["POST"])

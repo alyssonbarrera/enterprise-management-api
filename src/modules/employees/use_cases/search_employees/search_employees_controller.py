@@ -15,6 +15,6 @@ def search_employees_controller(request):
             'employees': employees
         }
 
-        return JsonResponse(response, safe=False)
+        return JsonResponse(response, status=200)
     except:
         return JsonResponse({'message': 'Internal server error'}, status=500)

@@ -52,12 +52,6 @@ class Employee(models.Model):
     updated_at = models.DateTimeField(default=None, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def get_projects(self):
-        return [project.to_dict() for project in self.projects.all()]
-
-    def get_department(self):
-        return self.department.to_dict() if self.department else None
-
     def to_dict(self):
         project_ids = list(self.projects.values_list('id', flat=True))
         department = self.department.to_dict() if self.department else None
@@ -136,17 +130,11 @@ class Project(models.Model):
     def get_department(self):
         return self.department.to_dict() if self.department else None
     
-    def remove_from_projects(self):
-        self.projects.clear()
-
-    def delete(self, *args, **kwargs):
-        self.remove_from_projects()
-        super().delete(*args, **kwargs)
-    
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
+            'description': self.description,
             'remaining_hours': self.remaining_hours,
             'estimated_deadline': self.estimated_deadline,
             'completed_hours': self.completed_hours,
@@ -155,6 +143,8 @@ class Project(models.Model):
             'supervisor': self.get_supervisor(),
             'department': self.get_department(),
             'done': self.done,
+            'start_date': self.start_date,
+            'end_date': self.end_date,
             'updated_at': self.updated_at,
             'created_at': self.created_at
         }
@@ -183,7 +173,8 @@ class ProjectEmployee(models.Model):
             'id': self.id,
             'project': self.project,
             'employee': self.employee,
-            'employee_workload': self.employee_workload,
+            'hours_worked_per_week': self.hours_worked_per_week,
+            'role': self.role,
             'created_at': self.created_at
         }
     

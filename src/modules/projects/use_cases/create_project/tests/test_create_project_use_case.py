@@ -1,7 +1,7 @@
 from uuid import UUID
-from src.utils.date_converter import convert_date_to_datetime
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
+from src.utils.date_converter import convert_date_to_datetime
 from src.modules.projects.repositories.projects_repository import ProjectsRepository
 from src.modules.employees.repositories.employees_repository import EmployeesRepository
 from src.utils.test.create_department_and_employee import create_department_and_employee
@@ -123,9 +123,8 @@ class CreateProjectUseCaseTest(TestCase):
             'description': 'Project Test Description',
             'department': department['id'],
             'employees': [employee['id']],
-            'estimated_deadline': '08/04/2023'
+            'estimated_deadline': '15/04/2023'
         }
-
 
         project = self.use_case.execute(project_data)
         
@@ -145,7 +144,7 @@ class CreateProjectUseCaseTest(TestCase):
             'name': 'Project Test',
             'description': 'Project Test Description',
             'department': department['id'],
-            'estimated_deadline': '11/04/2023',
+            'estimated_deadline': '15/04/2023',
             'supervisor': employee['id']
         }
 

@@ -23,7 +23,7 @@ class FindEmployeeByCriteriaControllerTest(TestCase):
         self.assertEqual(get_response.status_code, 200)
         self.assertIn('employee', get_response.json())
 
-    def test_find_employee_by_criteria_if_not_found(self):
+    def test_find_employee_by_criteria_if_not_query(self):
         response = self.client.get('/v1/employees/get')
         response_json = response.json()
 

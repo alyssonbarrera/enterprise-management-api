@@ -31,4 +31,6 @@ def create_department_and_employee(number=1):
     return {
         'department': department_dict,
         'employee': employee_dict,
+        'Department': department,
+        'Employee': employee,
     }

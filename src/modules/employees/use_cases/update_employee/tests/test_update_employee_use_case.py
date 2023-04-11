@@ -1,8 +1,8 @@
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
-from src.utils.error_messages import EMPLOYEE_DUPLICATE_ENTRY, EMPLOYEE_NOT_FOUND
 from ....repositories.employees_repository import EmployeesRepository
 from ...update_employee.update_employee_use_case import UpdateEmployeeUseCase
+from src.utils.error_messages import EMPLOYEE_DUPLICATE_ENTRY, EMPLOYEE_NOT_FOUND
 from src.utils.test.create_department_and_employee import create_department_and_employee
 
 class UpdateEmployeeUseCaseTest(TestCase):

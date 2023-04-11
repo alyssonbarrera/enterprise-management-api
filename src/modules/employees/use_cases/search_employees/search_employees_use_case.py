@@ -7,7 +7,6 @@ class SearchEmployeesUseCase:
     def execute(self, query, page):
         employees = self.employees_repository.search(query, page)
 
-
         employees_list = []
 
         for employee in employees:

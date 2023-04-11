@@ -2,18 +2,42 @@ from django.db.models import Sum
 from src.shared.infra.database.models import Project, ProjectEmployee
 
 class ProjectsEmployeesRepository:
-    def add_employees_to_project(self, project, employees):
-        for employee in employees:
-            project.employees.add(
-                employee['employee'],
-                through_defaults={'hours_worked_per_week': employee['hours_worked_per_week']}
-            )
+    def add_employee_to_project(self, project, employee_data):
+        project.employees.add(
+            employee_data['employee'],
+            through_defaults={'hours_worked_per_week': employee_data['hours_worked_per_week']}
+        )
 
-    def add_supervisor_to_project(self, project, supervisor):
+    def add_supervisor_to_project(self, project, supervisor_data):
+        project.employees.add(
+            supervisor_data['supervisor'],
+            through_defaults={'hours_worked_per_week': supervisor_data['hours_worked_per_week'], 'role': 'supervisor'}
+        )
+
+    def remove_employee_from_project(self, project, employee):
+        project.employees.remove(employee)
+
+    def delete_employees_from_project(self, project):
+        project_employees = project.employees.filter(projectemployee__role='employee')
+
+        if project_employees:
+            project.employees.remove(*project_employees)
+
+    def replace_supervisor_in_project(self, project, supervisor):
+        project_supervisor = project.projectemployee_set.filter(role='supervisor').first()
+
+        if project_supervisor:
+            project.employees.remove(project_supervisor.employee)
+
         project.employees.add(
             supervisor['supervisor'],
             through_defaults={'hours_worked_per_week': supervisor['hours_worked_per_week'], 'role': 'supervisor'}
         )
+
+    def get_by_project(self, project_id):
+        data = ProjectEmployee.objects.filter(project=project_id).values('employee', 'hours_worked_per_week', 'role')
+
+        return list(data)
 
     def calculate_hours_worked(self, employee):
         projects = Project.objects.filter(employees__id=employee['id'])

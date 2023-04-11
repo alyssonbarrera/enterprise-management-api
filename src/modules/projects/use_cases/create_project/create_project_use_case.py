@@ -7,7 +7,7 @@ from ....employees.repositories.employees_repository import EmployeesRepository
 from ....departments.repositories.departments_repository import DepartmentsRepository
 from ....projects.repositories.projects_employees_repository import ProjectsEmployeesRepository
 from src.utils.error_messages import DEPARTMENT_NOT_FOUND, PROJECT_ALREADY_EXISTS_IN_DEPARTMENT
-from src.utils.calculate_metrics import calculate_remaining_hours, calculate_available_work_hours, calculate_completed_hours, calculate_project_hours
+from src.utils.calculate_metrics import calculate_available_work_hours, calculate_and_update_project_hours
 
 class CreateProjectUseCase:
     def __init__(
@@ -38,17 +38,17 @@ class CreateProjectUseCase:
         if project_already_exists_in_department:
             raise AppError(PROJECT_ALREADY_EXISTS_IN_DEPARTMENT, 409)
         
-        project_data['last_hours_calculation_date'] = convert_date_to_datetime(project_data['last_hours_calculation_date']) if 'last_hours_calculation_date' in project_data else datetime.now()
+        project_data['last_hours_calculation_date'] = convert_date_to_datetime(project_data['last_hours_calculation_date']) if 'last_hours_calculation_date' in project_data else None
         project_data['estimated_deadline'] = convert_date_to_datetime(project_data['estimated_deadline'])
         project_data['completed_hours'] = project_data['completed_hours'] if 'completed_hours' in project_data else 0
         project_data['start_date'] = convert_date_to_datetime(project_data['start_date']) if 'start_date' in project_data else datetime.now()
         project_data['end_date'] = convert_date_to_datetime(project_data['end_date']) if 'end_date' in project_data else None
-        project_data['remaining_hours'] = calculate_remaining_hours(project_data)
+        project_data['remaining_hours'] = 0
         project_data['done'] = project_data['done'] if 'done' in project_data else False
         
         if 'employees' in project_data:
             for employee_id in project_data['employees']:
-                employee = self.employees_repository.get(employee_id)
+                employee = self.employees_repository.get(employee_id) # employee should be an instance of Employee entity
 
                 if not employee:
                     raise AppError(f'Employee with id {employee_id} not found', 404)
@@ -63,7 +63,7 @@ class CreateProjectUseCase:
                 raise AppError(f'Supervisor with id {project_data["supervisor"]} not found', 404)
             
             supervisor_project_data = supervisor # supervisor should be an instance of Employee entity
-            del project_data['supervisor']
+            project_data['supervisor'] = supervisor
 
         try:
             project = self.projects_repository.create(project_data)
@@ -75,13 +75,12 @@ class CreateProjectUseCase:
                     if hours_available_by_employee == 0:
                         raise AppError(f'Employee {employee.name} has no available hours to work on this project', 409)
 
-                    employee_data = []
-                    employee_data.append({
+                    employee_data = {
                         'employee': employee,
                         'hours_worked_per_week': hours_available_by_employee
-                    })
+                    }
                     
-                    self.projects_employees_repository.add_employees_to_project(project, employee_data)
+                    self.projects_employees_repository.add_employee_to_project(project, employee_data)
 
             if supervisor_project_data:
                 hours_available_by_supervisor = calculate_available_work_hours(supervisor_project_data, self.projects_employees_repository)
@@ -95,9 +94,9 @@ class CreateProjectUseCase:
                 }
 
                 self.projects_employees_repository.add_supervisor_to_project(project, supervisor_data)
-
-            if 'start_date' in project_data:
-                calculate_project_hours(project)
+            
+            if employees_project_data or supervisor_project_data:
+                calculate_and_update_project_hours(project)
 
             return project.to_dict()
         except DuplicateEntryError as error:

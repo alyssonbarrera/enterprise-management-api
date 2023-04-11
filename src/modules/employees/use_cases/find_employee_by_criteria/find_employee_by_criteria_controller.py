@@ -4,7 +4,7 @@ from src.shared.errors.AppError import AppError
 from django.views.decorators.http import require_http_methods
 from src.shared.errors.AppValidatorError import AppValidatorError
 from .make_find_employee_by_criteria_use_case import make_find_employee_by_criteria_use_case
-from .validators.find_employee_by_criteria_query_schema import find_employee_by_criteria_query_schema
+from ...validators.find_employee_by_criteria_query_schema import find_employee_by_criteria_query_schema
 
 @require_http_methods(['GET'])
 def find_employee_by_criteria_controller(request):

@@ -76,7 +76,5 @@ class ProjectsRepository:
         except ObjectDoesNotExist:
             return DuplicateEntryError(PROJECT_DUPLICATE_ENTRY)
         
-    def delete(self, id):
-        project = Project.objects.get(id=id)
-
-        project.delete()
+    def delete(self, project):
+        return project.delete()

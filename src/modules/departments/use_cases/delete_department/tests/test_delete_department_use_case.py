@@ -1,6 +1,6 @@
+from unittest.mock import patch
 from django.test import TestCase
 from src.shared.errors.AppError import AppError
-from unittest.mock import patch
 from ....repositories.departments_repository import DepartmentsRepository
 from ...delete_department.delete_department_use_case import DeleteDepartmentUseCase
 from src.utils.error_messages import DEPARTMENT_NOT_FOUND, DEPARTMENT_HAS_ACTIVE_EMPLOYEES, DEPARTMENT_HAS_ACTIVE_PROJECTS
