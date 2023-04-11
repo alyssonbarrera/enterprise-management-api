@@ -29,12 +29,11 @@ class ProjectsRepository:
     def find_by_criteria(self, criteria):
         try:
             project = {}
-            
             for key, value in criteria.items():
                 project = Project.objects.get(**{key: value})
                 
             return project
-        except ObjectDoesNotExist:
+        except Exception:
             return None
 
     def get_all(self, page):

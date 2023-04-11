@@ -1,3 +1,4 @@
+from django.db import connection
 from django.db.models import Sum
 from src.shared.infra.database.models import Project, ProjectEmployee
 

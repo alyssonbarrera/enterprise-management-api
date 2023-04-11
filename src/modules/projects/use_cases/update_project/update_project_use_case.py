@@ -1,12 +1,14 @@
 from datetime import datetime
 from django.utils import timezone
 from src.shared.errors.AppError import AppError
+from src.utils.date_converter import convert_date_to_datetime
 from src.shared.errors.DuplicateEntryError import DuplicateEntryError
+from src.utils.calculate_metrics import calculate_and_update_project_hours
+from src.utils.employee_available_work_hours import employee_available_work_hours
 from src.modules.projects.repositories.projects_repository import ProjectsRepository
 from src.modules.employees.repositories.employees_repository import EmployeesRepository
 from src.modules.departments.repositories.departments_repository import DepartmentsRepository
 from src.modules.projects.repositories.projects_employees_repository import ProjectsEmployeesRepository
-from src.utils.calculate_metrics import calculate_available_work_hours, calculate_and_update_project_hours
 from src.utils.error_messages import PROJECT_NOT_FOUND, DEPARTMENT_NOT_FOUND, PROJECT_ALREADY_EXISTS_IN_DEPARTMENT
 
 class UpdateProjectUseCase:
@@ -47,6 +49,11 @@ class UpdateProjectUseCase:
 
         data['department'] = department
 
+        data['estimated_deadline'] = convert_date_to_datetime(data['estimated_deadline']) if 'estimated_deadline' in data else project.estimated_deadline
+        data['start_date'] = convert_date_to_datetime(data['start_date']) if 'start_date' in data else project.start_date
+        data['end_date'] = convert_date_to_datetime(data['end_date']) if 'end_date' in data else project.end_date
+        data['last_hours_calculation_date'] = convert_date_to_datetime(data['last_hours_calculation_date']) if 'last_hours_calculation_date' in data else project.last_hours_calculation_date
+
         employees_not_found = []
 
         if 'employees' in data:
@@ -69,7 +76,10 @@ class UpdateProjectUseCase:
 
             if not supervisor:
                 raise AppError(f'Supervisor with id {data["supervisor"]} not found', 404)
-
+                        
+            if project.supervisor is not None and supervisor.id == project.supervisor.id:
+                raise AppError(f'Supervisor with id {data["supervisor"]} is already the supervisor of this project', 409)
+            
             supervisor_data = supervisor
             data['supervisor'] = supervisor
 
@@ -80,10 +90,7 @@ class UpdateProjectUseCase:
                 self.projects_employees_repository.delete_employees_from_project(project)
 
                 for employee in employees_data:
-                    hours_available_by_employee = calculate_available_work_hours(employee, self.projects_employees_repository)
-
-                    if hours_available_by_employee == 0:
-                        raise AppError(f'Employee {employee.name} has no available work hours', 409)
+                    hours_available_by_employee = employee_available_work_hours(employee, self.projects_employees_repository)
                     
                     employee = {
                         'employee': employee,
@@ -93,10 +100,7 @@ class UpdateProjectUseCase:
                     self.projects_employees_repository.add_employee_to_project(project, employee)
 
             if supervisor_data:
-                hours_available_by_supervisor = calculate_available_work_hours(supervisor_data, self.projects_employees_repository)
-
-                if hours_available_by_supervisor == 0:
-                    raise AppError(f'Supervisor {supervisor_data.name} has no available work hours', 409)
+                hours_available_by_supervisor = employee_available_work_hours(supervisor_data, self.projects_employees_repository)
                 
                 supervisor = {
                     'supervisor': supervisor_data,

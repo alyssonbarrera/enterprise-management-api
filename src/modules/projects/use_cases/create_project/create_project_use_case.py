@@ -3,11 +3,12 @@ from src.shared.errors.AppError import AppError
 from src.utils.date_converter import convert_date_to_datetime
 from ...repositories.projects_repository import ProjectsRepository
 from src.shared.errors.DuplicateEntryError import DuplicateEntryError
+from src.utils.calculate_metrics import calculate_and_update_project_hours
 from ....employees.repositories.employees_repository import EmployeesRepository
+from src.utils.employee_available_work_hours import employee_available_work_hours
 from ....departments.repositories.departments_repository import DepartmentsRepository
 from ....projects.repositories.projects_employees_repository import ProjectsEmployeesRepository
 from src.utils.error_messages import DEPARTMENT_NOT_FOUND, PROJECT_ALREADY_EXISTS_IN_DEPARTMENT
-from src.utils.calculate_metrics import calculate_available_work_hours, calculate_and_update_project_hours
 
 class CreateProjectUseCase:
     def __init__(
@@ -82,10 +83,7 @@ class CreateProjectUseCase:
 
             if employees_project_data:
                 for employee in employees_project_data:
-                    hours_available_by_employee = calculate_available_work_hours(employee, self.projects_employees_repository)
-
-                    if hours_available_by_employee == 0:
-                        raise AppError(f'Employee {employee.name} has no available hours to work on this project', 409)
+                    hours_available_by_employee = employee_available_work_hours(employee, self.projects_employees_repository)
 
                     employee_data = {
                         'employee': employee,
@@ -95,10 +93,7 @@ class CreateProjectUseCase:
                     self.projects_employees_repository.add_employee_to_project(project, employee_data)
 
             if supervisor_project_data:
-                hours_available_by_supervisor = calculate_available_work_hours(supervisor_project_data, self.projects_employees_repository)
-
-                if hours_available_by_supervisor == 0:
-                    raise AppError(f'Supervisor {supervisor_project_data.name} has no available hours to work on this project', 409)
+                hours_available_by_supervisor = employee_available_work_hours(supervisor_project_data, self.projects_employees_repository)
 
                 supervisor_data = {
                     'supervisor': supervisor_project_data,
@@ -108,6 +103,7 @@ class CreateProjectUseCase:
                 self.projects_employees_repository.add_supervisor_to_project(project, supervisor_data)
             
             if employees_project_data or supervisor_project_data:
+
                 calculate_and_update_project_hours(project)
 
             return project.to_dict()
