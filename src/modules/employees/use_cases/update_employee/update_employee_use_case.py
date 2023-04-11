@@ -17,7 +17,7 @@ class UpdateEmployeeUseCase:
         data['updated_at'] = timezone.now()
         
         try:
-            employee = self.employees_repository.update(id, data)
+            employee = self.employees_repository.update(employee, data)
             return employee.to_dict()
         except DuplicateEntryError as error:
             raise AppError(error.message, error.statusCode)

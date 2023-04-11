@@ -12,7 +12,11 @@ def fetch_project_metrics_controller(request, id):
         use_case = make_fetch_project_metrics_use_case()
         project_metrics = use_case.execute(id)
 
-        return JsonResponse(project_metrics, status=200)
+        response = {
+            'metrics': project_metrics
+        }
+
+        return JsonResponse(response, status=200)
     except Exception as error:
         if isinstance(error, AppError):
             return JsonResponse({'message': error.message}, status=error.statusCode)

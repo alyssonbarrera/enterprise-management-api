@@ -63,10 +63,8 @@ class ProjectsRepository:
 
         return projects_list
     
-    def update(self, id, data):
-        try:
-            project = Project.objects.get(id=id)
-            
+    def update(self, project, data):
+        try:            
             for key, value in data.items():
                 setattr(project, key, value)
 

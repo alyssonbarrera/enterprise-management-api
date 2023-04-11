@@ -181,6 +181,25 @@ class CreateProjectUseCaseTest(TestCase):
         self.assertTrue(project['created_at'] is not None)
         self.assertEqual(project['employees'][0]['id'], employee_1['id'])
 
+    def test_create_project_with_employee_not_found(self):
+        data = create_department_and_employee()
+
+        department = data['department']
+
+        project_data = {
+            'name': 'Project Test',
+            'description': 'Project Test Description',
+            'department': department['id'],
+            'employees': ['00000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000003'],
+            'estimated_deadline': '11/04/2023'
+        }
+
+        with self.assertRaises(Exception) as context:
+            self.use_case.execute(project_data)
+        
+        self.assertIsInstance(context.exception, AppError)
+        self.assertEqual(context.exception.statusCode, 404)
+
     def test_create_project_with_supervisor_has_no_hours(self):
         data = create_department_and_employee()
 
@@ -258,7 +277,8 @@ class CreateProjectUseCaseTest(TestCase):
             'start_date': '10/02/2023',
             'end_date': '15/02/2023',
             'done': True,
-            'last_hours_calculation_date': '02/04/2023'
+            'last_hours_calculation_date': '02/04/2023',
+            'completed_hours': 100,
         }
 
         project = self.use_case.execute(project_data)
@@ -267,6 +287,4 @@ class CreateProjectUseCaseTest(TestCase):
         self.assertTrue(isinstance(project['id'], UUID))
         self.assertEqual(project['name'], "Project Test")
         self.assertTrue(project['created_at'] is not None)
-        self.assertTrue(project['completed_hours'] >= 40)
         self.assertTrue(project['remaining_hours'] == 0)
-        self.assertTrue(project['last_hours_calculation_date'] != convert_date_to_datetime('02/04/2023'))

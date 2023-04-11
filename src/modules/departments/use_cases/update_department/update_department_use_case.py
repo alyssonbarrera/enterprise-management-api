@@ -22,6 +22,6 @@ class UpdateDepartmentUseCase:
 
         data['updated_at'] = timezone.now()
         
-        department = self.departments_repository.update(id, data)
+        department = self.departments_repository.update(department, data)
         
         return department.to_dict()

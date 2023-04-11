@@ -13,9 +13,9 @@ class FetchProjectMetricsControllerTest(TestCase):
         response_json = response.json()
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response_json['num_employees'], 1)
-        self.assertEqual(response_json['id'], str(project['id']))
-        self.assertEqual(response_json['name'], project['name'])
+        self.assertEqual(response_json['metrics']['num_employees'], 1)
+        self.assertEqual(response_json['metrics']['id'], str(project['id']))
+        self.assertEqual(response_json['metrics']['name'], project['name'])
 
     def test_fetch_project_metrics_if_method_not_allowed(self):
         response = self.client.post('/v1/projects/metrics/1')

@@ -1,7 +1,6 @@
 import uuid
-from datetime import datetime
 from django.db import models
-from django.core.exceptions import ValidationError
+from datetime import datetime
 
 class Department(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -177,7 +176,7 @@ class ProjectEmployee(models.Model):
             'role': self.role,
             'created_at': self.created_at
         }
-    
+
     class Meta:
         verbose_name = 'ProjectEmployee'
         verbose_name_plural = 'ProjectsEmployees'

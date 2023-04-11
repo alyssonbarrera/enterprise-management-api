@@ -14,6 +14,9 @@ class ProjectsEmployeesRepository:
             through_defaults={'hours_worked_per_week': supervisor_data['hours_worked_per_week'], 'role': 'supervisor'}
         )
 
+    def delete(self, project):
+        ProjectEmployee.objects.filter(project=project).delete()
+
     def remove_employee_from_project(self, project, employee):
         project.employees.remove(employee)
 
@@ -36,6 +39,11 @@ class ProjectsEmployeesRepository:
 
     def get_by_project(self, project_id):
         data = ProjectEmployee.objects.filter(project=project_id).values('employee', 'hours_worked_per_week', 'role')
+
+        return list(data)
+    
+    def get_all(self):
+        data = ProjectEmployee.objects.all().values('project', 'employee', 'hours_worked_per_week', 'role')
 
         return list(data)
 

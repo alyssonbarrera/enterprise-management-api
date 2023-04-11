@@ -45,15 +45,22 @@ class CreateProjectUseCase:
         project_data['end_date'] = convert_date_to_datetime(project_data['end_date']) if 'end_date' in project_data else None
         project_data['remaining_hours'] = 0
         project_data['done'] = project_data['done'] if 'done' in project_data else False
-        
+
         if 'employees' in project_data:
+            employees_not_found = []
+
             for employee_id in project_data['employees']:
                 employee = self.employees_repository.get(employee_id) # employee should be an instance of Employee entity
 
                 if not employee:
-                    raise AppError(f'Employee with id {employee_id} not found', 404)
+                    employees_not_found.append(employee_id)
+                    continue
 
                 employees_project_data.append(employee)
+
+            if employees_not_found:
+                raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not founds", 404)
+
             del project_data['employees']
 
         if 'supervisor' in project_data:
@@ -66,6 +73,11 @@ class CreateProjectUseCase:
             project_data['supervisor'] = supervisor
 
         try:
+            if 'done' in project_data and project_data['done']:
+                employees_project_data = []
+                supervisor_project_data = None
+                del project_data['supervisor']
+        
             project = self.projects_repository.create(project_data)
 
             if employees_project_data:

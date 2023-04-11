@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.utils import timezone
 from src.shared.errors.AppError import AppError
 from src.shared.errors.DuplicateEntryError import DuplicateEntryError
@@ -5,8 +6,8 @@ from src.modules.projects.repositories.projects_repository import ProjectsReposi
 from src.modules.employees.repositories.employees_repository import EmployeesRepository
 from src.modules.departments.repositories.departments_repository import DepartmentsRepository
 from src.modules.projects.repositories.projects_employees_repository import ProjectsEmployeesRepository
-from src.utils.error_messages import PROJECT_NOT_FOUND, DEPARTMENT_NOT_FOUND, PROJECT_ALREADY_EXISTS_IN_DEPARTMENT
 from src.utils.calculate_metrics import calculate_available_work_hours, calculate_and_update_project_hours
+from src.utils.error_messages import PROJECT_NOT_FOUND, DEPARTMENT_NOT_FOUND, PROJECT_ALREADY_EXISTS_IN_DEPARTMENT
 
 class UpdateProjectUseCase:
     def __init__(
@@ -38,22 +39,29 @@ class UpdateProjectUseCase:
             if not department:
                 raise AppError(DEPARTMENT_NOT_FOUND, 404)
 
-        if project.name != data['name']:
+        if 'name' in data and project.name != data['name']:
             department_already_has_project_with_same_name = self.projects_repository.project_already_exists_in_department(data['name'])
 
             if department_already_has_project_with_same_name:
                 raise AppError(PROJECT_ALREADY_EXISTS_IN_DEPARTMENT, 409)
 
         data['department'] = department
-        
+
+        employees_not_found = []
+
         if 'employees' in data:
             for employee_id in data['employees']:
                 employee = self.employees_repository.get(employee_id)
 
                 if not employee:
-                    raise AppError(f'Employee with id {employee_id} not found', 404)
+                    employees_not_found.append(employee_id)
+                    continue
 
                 employees_data.append(employee)
+
+            if employees_not_found:
+                raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not found", 404)
+
             del data['employees']
 
         if 'supervisor' in data:
@@ -68,8 +76,6 @@ class UpdateProjectUseCase:
         data['updated_at'] = timezone.now()
         
         try:
-            project = self.projects_repository.update(id, data)
-
             if employees_data:
                 self.projects_employees_repository.delete_employees_from_project(project)
 
@@ -96,11 +102,21 @@ class UpdateProjectUseCase:
                     'supervisor': supervisor_data,
                     'hours_worked_per_week': hours_available_by_supervisor
                 }
-                
-                self.projects_employees_repository.replace_supervisor_in_project(project, supervisor)
-                
-            calculate_and_update_project_hours(project)
 
-            return project.to_dict()
+                self.projects_employees_repository.replace_supervisor_in_project(project, supervisor)
+
+            if 'done' in data:
+                if data['done'] == True:
+                    data['end_date'] = datetime.now()
+
+                    self.projects_employees_repository.delete(project)
+                else:
+                    data['end_date'] = None                
+
+            project_updated = self.projects_repository.update(project, data)
+
+            calculate_and_update_project_hours(project_updated)
+
+            return project_updated.to_dict()
         except DuplicateEntryError as error:
             raise AppError(error.message, error.statusCode)

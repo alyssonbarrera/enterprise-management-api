@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.utils.timezone import make_aware
 
 def calculate_remaining_hours(project):
     total_hours_worked = project.completed_hours
@@ -6,7 +7,7 @@ def calculate_remaining_hours(project):
 
     estimated_deadline = project.estimated_deadline
 
-    if project.end_date:
+    if project.end_date or start_date > estimated_deadline:
         return 0
 
     hours_until_project_completion = (estimated_deadline - start_date).total_seconds() / (60 * 60)
@@ -14,30 +15,6 @@ def calculate_remaining_hours(project):
     remaining_hours = round(hours_until_project_completion - total_hours_worked)
 
     return max(0, remaining_hours)
-
-def calculate_completed_hours(project):
-    last_calculation_date = project['last_hours_calculation_date']
-
-    if not last_calculation_date:
-        return 0
-
-    time_since_last_calculation = datetime.now() - last_calculation_date
-    hours_since_last_calculation = time_since_last_calculation.days * 24
-
-    return project['completed_hours'] + hours_since_last_calculation
-
-def calculate_employee_workload(total_hours_worked, employees):
-    num_employees = len(employees)
-    if num_employees == 0:
-        return {}
-
-    employee_workload = {}
-    workload_per_employee = total_hours_worked / num_employees
-
-    for employee in employees:
-        employee_workload[employee.id] = workload_per_employee * employee['weekly_workload'] / 40
-
-    return employee_workload
 
 def calculate_available_work_hours(employee, projects_employees_repository):
     hours_worked = projects_employees_repository.get_hours_worked_per_week(employee)

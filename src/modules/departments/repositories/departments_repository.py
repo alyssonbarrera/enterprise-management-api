@@ -49,9 +49,7 @@ class DepartmentsRepository:
         
         return department
     
-    def update(self, id, data):
-        department = Department.objects.get(id=id)
-        
+    def update(self, department, data):     
         for key, value in data.items():
             setattr(department, key, value)
 

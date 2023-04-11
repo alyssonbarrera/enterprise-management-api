@@ -12,7 +12,7 @@ def create_project(number=1):
         'name': f'Project Test {number}',
         'description': f'Project Test Description {number}',
         'department': department,
-        'estimated_deadline': convert_date_to_datetime('15/04/2023'),
+        'estimated_deadline': convert_date_to_datetime('12/04/2023'),
         'start_date': convert_date_to_datetime('10/04/2023'),
     }
 

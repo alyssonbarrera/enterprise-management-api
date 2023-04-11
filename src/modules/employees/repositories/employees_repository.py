@@ -58,10 +58,8 @@ class EmployeesRepository:
 
         return employees_list
 
-    def update(self, id, data):
+    def update(self, employee, data):
         try:
-            employee = Employee.objects.get(id=id)
-
             for key, value in data.items():
                 setattr(employee, key, value)
 

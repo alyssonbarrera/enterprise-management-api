@@ -6,11 +6,12 @@ from src.utils.test.create_project import create_project
 from src.utils.test.create_department import create_department
 from ....repositories.projects_repository import ProjectsRepository
 from ...update_project.update_project_use_case import UpdateProjectUseCase
+from src.utils.error_messages import PROJECT_NOT_FOUND, DEPARTMENT_NOT_FOUND
 from .....employees.repositories.employees_repository import EmployeesRepository
+from src.utils.test.create_project_with_employee import create_project_with_employee
 from ....repositories.projects_employees_repository import ProjectsEmployeesRepository
 from .....departments.repositories.departments_repository import DepartmentsRepository
 from src.utils.test.create_department_and_employee import create_department_and_employee
-from src.utils.error_messages import PROJECT_NOT_FOUND, DEPARTMENT_NOT_FOUND, PROJECT_ALREADY_EXISTS_IN_DEPARTMENT
 
 class UpdateProjectUseCaseTest(TestCase):
     def setUp(self):
@@ -215,4 +216,17 @@ class UpdateProjectUseCaseTest(TestCase):
             self.use_case.execute(project['id'], project_data)
 
         self.assertIsInstance(context.exception, AppError)
-            
+    
+    def test_update_project_done(self):
+        project = create_project_with_employee()
+
+        project_data = {
+            'done': True,
+        }
+
+        updated_project = self.use_case.execute(project['id'], project_data)
+        project_employees = self.projects_employees_repository.get_by_project(project['id'])
+
+        self.assertEqual(updated_project['done'], project_data['done'])
+        self.assertEqual(updated_project['employees'], [])
+        self.assertEqual(project_employees, [])

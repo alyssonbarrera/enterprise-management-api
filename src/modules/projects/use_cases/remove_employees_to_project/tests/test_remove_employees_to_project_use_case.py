@@ -12,7 +12,7 @@ class RemoveEmployeesToProjectUseCaseTest(TestCase):
         self.projects_repository = ProjectsRepository()
         self.employees_repository = EmployeesRepository()
         self.projects_employees_repository = ProjectsEmployeesRepository()
-        self.add_employee_to_project_use_case = RemoveEmployeesToProjectUseCase(
+        self.remove_employees_to_project_use_case = RemoveEmployeesToProjectUseCase(
             self.projects_repository,
             self.employees_repository,
             self.projects_employees_repository
@@ -25,7 +25,7 @@ class RemoveEmployeesToProjectUseCaseTest(TestCase):
 
         employee_ids = [employee['id']]
 
-        project = self.add_employee_to_project_use_case.execute(project['id'], employee_ids)
+        project = self.remove_employees_to_project_use_case.execute(project['id'], employee_ids)
 
         self.assertEqual(project['name'], project['name'])
         self.assertEqual(len(project['employees']), 0)
@@ -38,7 +38,7 @@ class RemoveEmployeesToProjectUseCaseTest(TestCase):
         employee_ids = [employee['id']]
 
         with self.assertRaises(AppError) as context:
-            self.add_employee_to_project_use_case.execute('00000000-0000-0000-0000-000000000000', employee_ids)
+            self.remove_employees_to_project_use_case.execute('00000000-0000-0000-0000-000000000000', employee_ids)
 
         self.assertIsInstance(context.exception, AppError)
         self.assertEqual(context.exception.message, PROJECT_NOT_FOUND)
@@ -47,7 +47,7 @@ class RemoveEmployeesToProjectUseCaseTest(TestCase):
         project = create_project_with_employee()
 
         with self.assertRaises(AppError) as context:
-            self.add_employee_to_project_use_case.execute(project['id'], ['00000000-0000-0000-0000-000000000000'])
+            self.remove_employees_to_project_use_case.execute(project['id'], ['00000000-0000-0000-0000-000000000000'])
 
         self.assertIsInstance(context.exception, AppError)
         self.assertEqual(context.exception.message, 'Employee with id 00000000-0000-0000-0000-000000000000 not found')
