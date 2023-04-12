@@ -44,9 +44,8 @@ Enterprise Management API
 - [x] A quantidade de horas realizadas no projeto deve ser baseada na quantidade de horas trabalhadas pelos funcionários e no número de semanas passadas desde o último cálculo;  
 - [x] Não deve ser possível adicionar um funcionário ou supervisor em um projeto caso eles não tenham horas disponíveis.  
 
-## Requisitos Não-funcionais
+### Requisitos Não-funcionais
 
 - [x] Os dados da aplicação precisam estar persistidos em um banco MySQL;  
 - [x] Todas as listas de dados precisam estar paginadas com 20 itens por página;  
 - [x] A API deve conter testes automatizados;  
-- [ ] A API deve conter documentação.  
