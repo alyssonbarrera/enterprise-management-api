@@ -26,59 +26,60 @@ class CreateProjectUseCase:
     def execute(self, project_data):
         employees_project_data = []
         supervisor_project_data = None
-        
-        department = self.departments_repository.get(project_data['department'])
 
-        if not department:
-            raise AppError(DEPARTMENT_NOT_FOUND, 404)
-                
-        project_data['department'] = department # department should be an instance of Department entity
-        
-        project_already_exists_in_department = self.projects_repository.project_already_exists_in_department(project_data['name'])
-
-        if project_already_exists_in_department:
-            raise AppError(PROJECT_ALREADY_EXISTS_IN_DEPARTMENT, 409)
-        
         project_data['last_hours_calculation_date'] = convert_date_to_datetime(project_data['last_hours_calculation_date']) if 'last_hours_calculation_date' in project_data else None
-        project_data['estimated_deadline'] = convert_date_to_datetime(project_data['estimated_deadline'])
+        project_data['estimated_deadline'] = convert_date_to_datetime(project_data['estimated_deadline']) if 'estimated_deadline' in project_data else None
         project_data['completed_hours'] = project_data['completed_hours'] if 'completed_hours' in project_data else 0
         project_data['start_date'] = convert_date_to_datetime(project_data['start_date']) if 'start_date' in project_data else datetime.now()
         project_data['end_date'] = convert_date_to_datetime(project_data['end_date']) if 'end_date' in project_data else None
-        project_data['remaining_hours'] = 0
         project_data['done'] = project_data['done'] if 'done' in project_data else False
+        project_data['remaining_hours'] = 0
 
-        if 'employees' in project_data:
-            employees_not_found = []
-
-            for employee_id in project_data['employees']:
-                employee = self.employees_repository.get(employee_id) # employee should be an instance of Employee entity
-
-                if not employee:
-                    employees_not_found.append(employee_id)
-                    continue
-
-                employees_project_data.append(employee)
-
-            if employees_not_found:
-                raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not founds", 404)
-
-            del project_data['employees']
-
-        if 'supervisor' in project_data:
-            supervisor = self.employees_repository.get(project_data['supervisor'])
-
-            if not supervisor:
-                raise AppError(f'Supervisor with id {project_data["supervisor"]} not found', 404)
-            
-            supervisor_project_data = supervisor # supervisor should be an instance of Employee entity
-            project_data['supervisor'] = supervisor
+        if 'done' in project_data and project_data['done']:
+            if 'employees' in project_data:
+                del project_data['employees']
+            if 'supervisor' in project_data:
+                del project_data['supervisor']
 
         try:
-            if 'done' in project_data and project_data['done']:
-                employees_project_data = []
-                supervisor_project_data = None
-                del project_data['supervisor']
-        
+            department = self.departments_repository.get(project_data['department'])
+
+            if not department:
+                raise AppError(DEPARTMENT_NOT_FOUND, 404)
+                    
+            project_data['department'] = department # department should be an instance of Department entity
+            
+            project_already_exists_in_department = self.projects_repository.project_already_exists_in_department(project_data['name'])
+
+            if project_already_exists_in_department:
+                raise AppError(PROJECT_ALREADY_EXISTS_IN_DEPARTMENT, 409)
+            
+            if 'employees' in project_data:
+                employees_not_found = []
+
+                for employee_id in project_data['employees']:
+                    employee = self.employees_repository.get(employee_id) # employee should be an instance of Employee entity
+
+                    if not employee:
+                        employees_not_found.append(employee_id)
+                        continue
+
+                    employees_project_data.append(employee)
+
+                if employees_not_found:
+                    raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not founds", 404)
+
+                del project_data['employees']
+
+            if 'supervisor' in project_data:
+                supervisor = self.employees_repository.get(project_data['supervisor'])
+
+                if not supervisor:
+                    raise AppError(f'Supervisor with id {project_data["supervisor"]} not found', 404)
+                
+                supervisor_project_data = supervisor # supervisor should be an instance of Employee entity
+                project_data['supervisor'] = supervisor
+
             project = self.projects_repository.create(project_data)
 
             if employees_project_data:
@@ -103,7 +104,6 @@ class CreateProjectUseCase:
                 self.projects_employees_repository.add_supervisor_to_project(project, supervisor_data)
             
             if employees_project_data or supervisor_project_data:
-
                 calculate_and_update_project_hours(project)
 
             return project.to_dict()

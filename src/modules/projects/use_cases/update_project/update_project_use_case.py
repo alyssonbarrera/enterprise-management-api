@@ -28,64 +28,64 @@ class UpdateProjectUseCase:
         employees_data = []
         supervisor_data = None
 
-        project = self.projects_repository.get(id)
-
-        if not project:
-            raise AppError(PROJECT_NOT_FOUND, 404)
-
-        department = project.department
-
-        if 'department' in data:
-            department = self.departments_repository.get(data['department'])
-
-            if not department:
-                raise AppError(DEPARTMENT_NOT_FOUND, 404)
-
-        if 'name' in data and project.name != data['name']:
-            department_already_has_project_with_same_name = self.projects_repository.project_already_exists_in_department(data['name'])
-
-            if department_already_has_project_with_same_name:
-                raise AppError(PROJECT_ALREADY_EXISTS_IN_DEPARTMENT, 409)
-
-        data['department'] = department
-
-        data['estimated_deadline'] = convert_date_to_datetime(data['estimated_deadline']) if 'estimated_deadline' in data else project.estimated_deadline
-        data['start_date'] = convert_date_to_datetime(data['start_date']) if 'start_date' in data else project.start_date
-        data['end_date'] = convert_date_to_datetime(data['end_date']) if 'end_date' in data else project.end_date
-        data['last_hours_calculation_date'] = convert_date_to_datetime(data['last_hours_calculation_date']) if 'last_hours_calculation_date' in data else project.last_hours_calculation_date
-
-        employees_not_found = []
-
-        if 'employees' in data:
-            for employee_id in data['employees']:
-                employee = self.employees_repository.get(employee_id)
-
-                if not employee:
-                    employees_not_found.append(employee_id)
-                    continue
-
-                employees_data.append(employee)
-
-            if employees_not_found:
-                raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not found", 404)
-
-            del data['employees']
-
-        if 'supervisor' in data:
-            supervisor = self.employees_repository.get(data['supervisor'])
-
-            if not supervisor:
-                raise AppError(f'Supervisor with id {data["supervisor"]} not found', 404)
-                        
-            if project.supervisor is not None and supervisor.id == project.supervisor.id:
-                raise AppError(f'Supervisor with id {data["supervisor"]} is already the supervisor of this project', 409)
-            
-            supervisor_data = supervisor
-            data['supervisor'] = supervisor
-
-        data['updated_at'] = timezone.now()
-        
         try:
+            project = self.projects_repository.get(id)
+
+            if not project:
+                raise AppError(PROJECT_NOT_FOUND, 404)
+
+            department = project.department
+
+            if 'department' in data:
+                department = self.departments_repository.get(data['department'])
+
+                if not department:
+                    raise AppError(DEPARTMENT_NOT_FOUND, 404)
+
+            if 'name' in data and project.name != data['name']:
+                department_already_has_project_with_same_name = self.projects_repository.project_already_exists_in_department(data['name'])
+
+                if department_already_has_project_with_same_name:
+                    raise AppError(PROJECT_ALREADY_EXISTS_IN_DEPARTMENT, 409)
+
+            data['department'] = department
+
+            data['estimated_deadline'] = convert_date_to_datetime(data['estimated_deadline']) if 'estimated_deadline' in data else project.estimated_deadline
+            data['start_date'] = convert_date_to_datetime(data['start_date']) if 'start_date' in data else project.start_date
+            data['end_date'] = convert_date_to_datetime(data['end_date']) if 'end_date' in data else project.end_date
+            data['last_hours_calculation_date'] = convert_date_to_datetime(data['last_hours_calculation_date']) if 'last_hours_calculation_date' in data else project.last_hours_calculation_date
+
+            employees_not_found = []
+
+            if 'employees' in data:
+                for employee_id in data['employees']:
+                    employee = self.employees_repository.get(employee_id)
+
+                    if not employee:
+                        employees_not_found.append(employee_id)
+                        continue
+
+                    employees_data.append(employee)
+
+                if employees_not_found:
+                    raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not found", 404)
+
+                del data['employees']
+
+            if 'supervisor' in data:
+                supervisor = self.employees_repository.get(data['supervisor'])
+
+                if not supervisor:
+                    raise AppError(f'Supervisor with id {data["supervisor"]} not found', 404)
+                            
+                if project.supervisor is not None and supervisor.id == project.supervisor.id:
+                    raise AppError(f'Supervisor with id {data["supervisor"]} is already the supervisor of this project', 409)
+                
+                supervisor_data = supervisor
+                data['supervisor'] = supervisor
+
+            data['updated_at'] = timezone.now()
+
             if employees_data:
                 self.projects_employees_repository.delete_employees_from_project(project)
 

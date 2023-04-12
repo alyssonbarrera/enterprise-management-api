@@ -282,9 +282,13 @@ class CreateProjectUseCaseTest(TestCase):
         }
 
         project = self.use_case.execute(project_data)
+        project_employee = self.projects_employees_repository.get_by_project(project['id'])
 
         self.assertTrue(project['updated_at'] is None)
         self.assertTrue(isinstance(project['id'], UUID))
         self.assertEqual(project['name'], "Project Test")
         self.assertTrue(project['created_at'] is not None)
         self.assertTrue(project['remaining_hours'] == 0)
+        self.assertEqual(project['employees'], [])
+        self.assertTrue(project['done'] == True)
+        self.assertEqual(project_employee, [])

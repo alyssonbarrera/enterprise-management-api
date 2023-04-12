@@ -14,15 +14,16 @@ class CreateEmployeeUseCase:
         self.departments_repository = departments_repository
 
     def execute(self, data):
-        department = self.departments_repository.get(data['department'])
-
-        if not department:
-            raise AppError(DEPARTMENT_NOT_FOUND, 404)
-        
-        data['department'] = department
-
         try:
+            department = self.departments_repository.get(data['department'])
+
+            if not department:
+                raise AppError(DEPARTMENT_NOT_FOUND, 404)
+            
+            data['department'] = department
+
             employee = self.employees_repository.create(data)
+
             return employee.to_dict()
         except DuplicateEntryError as error:
             raise AppError(error.message, error.statusCode)

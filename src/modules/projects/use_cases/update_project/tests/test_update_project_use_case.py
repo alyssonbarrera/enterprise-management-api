@@ -216,17 +216,25 @@ class UpdateProjectUseCaseTest(TestCase):
             self.use_case.execute(project['id'], project_data)
 
         self.assertIsInstance(context.exception, AppError)
-    
+
     def test_update_project_done(self):
         project = create_project_with_employee()
 
-        project_data = {
+        project_data_1 = {
             'done': True,
         }
 
-        updated_project = self.use_case.execute(project['id'], project_data)
+        project_data_2 = {
+            'done': False,
+        }
+
+        updated_project_1 = self.use_case.execute(project['id'], project_data_1)
+        updated_project_2 = self.use_case.execute(project['id'], project_data_2)
+        
         project_employees = self.projects_employees_repository.get_by_project(project['id'])
 
-        self.assertEqual(updated_project['done'], project_data['done'])
-        self.assertEqual(updated_project['employees'], [])
         self.assertEqual(project_employees, [])
+        self.assertNotEqual(updated_project_1['end_date'], None)
+        self.assertEqual(updated_project_2['end_date'], None)
+        self.assertEqual(updated_project_1['done'], project_data_1['done'])
+        self.assertEqual(updated_project_2['done'], project_data_2['done'])

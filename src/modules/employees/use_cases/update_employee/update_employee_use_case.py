@@ -9,15 +9,16 @@ class UpdateEmployeeUseCase:
         self.employees_repository = employees_repository
 
     def execute(self, id, data):
-        employee = self.employees_repository.get(id)
-
-        if not employee:
-            raise AppError(EMPLOYEE_NOT_FOUND, 404)
-
-        data['updated_at'] = timezone.now()
-        
         try:
+            employee = self.employees_repository.get(id)
+
+            if not employee:
+                raise AppError(EMPLOYEE_NOT_FOUND, 404)
+
+            data['updated_at'] = timezone.now()
+            
             employee = self.employees_repository.update(employee, data)
+
             return employee.to_dict()
         except DuplicateEntryError as error:
             raise AppError(error.message, error.statusCode)
