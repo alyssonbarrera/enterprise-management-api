@@ -1,7 +1,7 @@
 import json
 from django.http import HttpResponse
 
-class RequestBodyToJson:
+class JsonParserMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
