@@ -18,19 +18,19 @@ class FindEmployeeByCriteriaControllerTest(TestCase):
             'rg': employee['rg'],
         }
 
-        get_response = self.client.get(f'/v1/employees/get', query)
+        get_response = self.client.get(f'/api/employees/get', query)
 
         self.assertEqual(get_response.status_code, 200)
         self.assertIn('employee', get_response.json())
 
     def test_find_employee_by_criteria_if_not_query(self):
-        response = self.client.get('/v1/employees/get')
+        response = self.client.get('/api/employees/get')
         response_json = response.json()
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('validation_error', response_json['message'])
 
     def test_find_employee_by_criteria_if_method_not_allowed(self):
-        response = self.client.put('/v1/employees/get')
+        response = self.client.put('/api/employees/get')
 
         self.assertEqual(response.status_code, 405)

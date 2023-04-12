@@ -15,7 +15,7 @@ class UpdateEmployeeControllerTest(TestCase):
             'name': 'Employee Test 2',
         }
         
-        update_response = self.client.put(f'/v1/employees/update/{employee["id"]}', employee_update, content_type='application/json')
+        update_response = self.client.put(f'/api/employees/update/{employee["id"]}', employee_update, content_type='application/json')
         update_response_json = update_response.json()
 
         self.assertIn('employee', update_response_json)
@@ -24,6 +24,6 @@ class UpdateEmployeeControllerTest(TestCase):
         self.assertEqual('Employee Test 2', update_response_json['employee']['name'])
 
     def test_update_employee_if_method_not_allowed(self):
-        response = self.client.get('/v1/employees/update/1')
+        response = self.client.get('/api/employees/update/1')
 
         self.assertEqual(response.status_code, 405)

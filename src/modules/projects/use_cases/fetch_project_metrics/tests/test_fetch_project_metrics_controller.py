@@ -9,7 +9,7 @@ class FetchProjectMetricsControllerTest(TestCase):
     def test_fetch_project_metrics(self):
         project = create_project_with_employee()
 
-        response = self.client.get(f'/v1/projects/metrics/{project["id"]}')
+        response = self.client.get(f'/api/projects/metrics/{project["id"]}')
         response_json = response.json()
 
         self.assertEqual(response.status_code, 200)
@@ -18,6 +18,6 @@ class FetchProjectMetricsControllerTest(TestCase):
         self.assertEqual(response_json['metrics']['name'], project['name'])
 
     def test_fetch_project_metrics_if_method_not_allowed(self):
-        response = self.client.post('/v1/projects/metrics/1')
+        response = self.client.post('/api/projects/metrics/1')
 
         self.assertEqual(response.status_code, 405)

@@ -11,7 +11,7 @@ class CreateEmployeeControllerTest(TestCase):
             'description': 'Department Test Description',
         }
 
-        department_response = self.client.post('/v1/departments/create', department_data, content_type='application/json').json()
+        department_response = self.client.post('/api/departments/create', department_data, content_type='application/json').json()
 
         employee_data = {
             'name': 'Employee Test',
@@ -25,12 +25,12 @@ class CreateEmployeeControllerTest(TestCase):
             'department': department_response['department']['id'],
         }
 
-        employee_response = self.client.post('/v1/employees/create', employee_data, content_type='application/json')
+        employee_response = self.client.post('/api/employees/create', employee_data, content_type='application/json')
 
         self.assertEqual(employee_response.status_code, 201)
         self.assertIn('employee', employee_response.json())
 
     def test_create_employee_if_method_not_allowed(self):
-        response = self.client.get('/v1/employees/create')
+        response = self.client.get('/api/employees/create')
 
         self.assertEqual(response.status_code, 405)

@@ -15,7 +15,7 @@ class RemoveEmployeesToProjectControllerTest(TestCase):
 
         employees_ids = [employee['id']]
 
-        remove_employees_to_project_response = self.client.patch(f'/v1/projects/remove/employees/{project["id"]}', {'employees': employees_ids}, content_type='application/json')
+        remove_employees_to_project_response = self.client.patch(f'/api/projects/remove/employees/{project["id"]}', {'employees': employees_ids}, content_type='application/json')
         remove_employees_to_project_response_json = remove_employees_to_project_response.json()
 
         self.assertIn('project', remove_employees_to_project_response_json)
@@ -23,6 +23,6 @@ class RemoveEmployeesToProjectControllerTest(TestCase):
         self.assertIn('id', remove_employees_to_project_response_json['project'])
 
     def test_remove_employees_to_project_if_method_not_allowed(self):
-        response = self.client.get('/v1/projects/add/employees/1')
+        response = self.client.get('/api/projects/add/employees/1')
 
         self.assertEqual(response.status_code, 405)

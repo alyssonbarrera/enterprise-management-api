@@ -11,11 +11,11 @@ class DeleteEmployeeControllerTest(TestCase):
 
         employee = data['employee']
 
-        delete_response = self.client.delete(f'/v1/employees/delete/{employee["id"]}')
+        delete_response = self.client.delete(f'/api/employees/delete/{employee["id"]}')
 
         self.assertEqual(delete_response.status_code, 204)
 
     def test_delete_department_if_method_not_allowed(self):
-        response = self.client.get('/v1/employees/delete/1')
+        response = self.client.get('/api/employees/delete/1')
 
         self.assertEqual(response.status_code, 405)

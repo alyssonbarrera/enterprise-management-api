@@ -14,19 +14,19 @@ class FindProjectByCriteriaControllerTest(TestCase):
             'name': project['name'],
         }
 
-        get_response = self.client.get(f'/v1/projects/get', query)
+        get_response = self.client.get(f'/api/projects/get', query)
 
         self.assertEqual(get_response.status_code, 200)
         self.assertIn('project', get_response.json())
 
     def test_find_project_by_criteria_if_not_query(self):
-        response = self.client.get('/v1/projects/get')
+        response = self.client.get('/api/projects/get')
         response_json = response.json()
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('validation_error', response_json['message'])
 
     def test_find_project_by_criteria_if_method_not_allowed(self):
-        response = self.client.put('/v1/projects/get')
+        response = self.client.put('/api/projects/get')
 
         self.assertEqual(response.status_code, 405)

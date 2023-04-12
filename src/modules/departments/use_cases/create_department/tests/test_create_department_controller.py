@@ -10,7 +10,7 @@ class CreateDepartmentControllerTest(TestCase):
             'name': 'Department Test',
             'description': 'Department Test Description',
         }
-        response = self.client.post('/v1/departments/create', data, content_type='application/json')
+        response = self.client.post('/api/departments/create', data, content_type='application/json')
         response_data = response.json()
 
         self.assertIn('department', response_data)
@@ -19,7 +19,7 @@ class CreateDepartmentControllerTest(TestCase):
         self.assertEqual(response_data['department']['description'], 'Department Test Description')
 
     def test_create_department_if_method_not_allowed(self):
-        response = self.client.get('/v1/departments/create')
+        response = self.client.get('/api/departments/create')
 
         self.assertEqual(response.status_code, 405)
 
@@ -28,13 +28,13 @@ class CreateDepartmentControllerTest(TestCase):
             'name': '',
             'description': 'Department Test Description',
         }
-        response = self.client.post('/v1/departments/create', data, content_type='application/json')
+        response = self.client.post('/api/departments/create', data, content_type='application/json')
         response_data = response.json()
 
         self.assertEqual(response.status_code, 400)
         self.assertIn('validation_error', response_data['message'])
 
     def test_create_department_if_methot_is_not_allowed(self):
-        response = self.client.put('/v1/departments/create')
+        response = self.client.put('/api/departments/create')
 
         self.assertEqual(response.status_code, 405)

@@ -15,7 +15,7 @@ class AddEmployeesToProjectControllerTest(TestCase):
 
         employees_ids = [employee['id']]
 
-        add_employees_to_project_response = self.client.patch(f'/v1/projects/add/employees/{project["id"]}', {'employees': employees_ids}, content_type='application/json')
+        add_employees_to_project_response = self.client.patch(f'/api/projects/add/employees/{project["id"]}', {'employees': employees_ids}, content_type='application/json')
         add_employees_to_project_response_json = add_employees_to_project_response.json()
 
         self.assertIn('project', add_employees_to_project_response_json)
@@ -23,6 +23,6 @@ class AddEmployeesToProjectControllerTest(TestCase):
         self.assertIn('id', add_employees_to_project_response_json['project'])
 
     def test_add_employees_to_project_if_method_not_allowed(self):
-        response = self.client.get('/v1/projects/add/employees/1')
+        response = self.client.get('/api/projects/add/employees/1')
 
         self.assertEqual(response.status_code, 405)

@@ -9,12 +9,12 @@ class GetAllEmployeesControllerTest(TestCase):
     def test_get_all_employees(self):
         create_department_and_employee()
 
-        employee_response = self.client.get('/v1/employees/get/all')
+        employee_response = self.client.get('/api/employees/get/all')
 
         self.assertEqual(employee_response.status_code, 200)
         self.assertIn('employees', employee_response.json())
 
     def test_get_all_employees_if_method_not_allowed(self):
-        response = self.client.post('/v1/employees/get/all')
+        response = self.client.post('/api/employees/get/all')
 
         self.assertEqual(response.status_code, 405)

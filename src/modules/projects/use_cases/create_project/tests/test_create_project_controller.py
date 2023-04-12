@@ -17,13 +17,13 @@ class CreateProjectControllerTest(TestCase):
             'estimated_deadline': '20/04/2023'
         }
 
-        project_response = self.client.post('/v1/projects/create', project_data, content_type='application/json')
+        project_response = self.client.post('/api/projects/create', project_data, content_type='application/json')
 
         self.assertEqual(project_response.status_code, 201)
         self.assertIn('project', project_response.json())
 
     def test_create_project_if_method_not_allowed(self):
-        response = self.client.get('/v1/projects/create')
+        response = self.client.get('/api/projects/create')
 
         self.assertEqual(response.status_code, 405)
 
@@ -41,7 +41,7 @@ class CreateProjectControllerTest(TestCase):
             'estimated_deadline': '20/04/2023'
         }
 
-        project_response = self.client.post('/v1/projects/create', project_data, content_type='application/json')
+        project_response = self.client.post('/api/projects/create', project_data, content_type='application/json')
         project_response_json = project_response.json()
 
         self.assertIn('project', project_response_json)
@@ -63,7 +63,7 @@ class CreateProjectControllerTest(TestCase):
             'estimated_deadline': '20/04/2023'
         }
 
-        project_response = self.client.post('/v1/projects/create', project_data, content_type='application/json')
+        project_response = self.client.post('/api/projects/create', project_data, content_type='application/json')
         project_response_json = project_response.json()
 
         self.assertIn('project', project_response_json)

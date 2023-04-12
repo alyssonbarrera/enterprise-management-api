@@ -11,13 +11,13 @@ class DeleteDepartmentControllerTest(TestCase):
             'description': 'Department Test Description',
         }
         
-        create_response = self.client.post('/v1/departments/create', data, content_type='application/json').json()
+        create_response = self.client.post('/api/departments/create', data, content_type='application/json').json()
 
-        delete_response = self.client.delete(f'/v1/departments/delete/' + create_response['department']['id'])
+        delete_response = self.client.delete(f'/api/departments/delete/' + create_response['department']['id'])
 
         self.assertEqual(delete_response.status_code, 204)
 
     def test_delete_department_if_method_not_allowed(self):
-        response = self.client.get('/v1/departments/delete/1')
+        response = self.client.get('/api/departments/delete/1')
 
         self.assertEqual(response.status_code, 405)

@@ -13,7 +13,7 @@ class UpdateProjectControllerTest(TestCase):
             'name': 'Project Test 2',
         }
         
-        update_response = self.client.put(f'/v1/projects/update/{project["id"]}', project_update, content_type='application/json')
+        update_response = self.client.put(f'/api/projects/update/{project["id"]}', project_update, content_type='application/json')
         update_response_json = update_response.json()
 
         self.assertIn('project', update_response_json)
@@ -22,6 +22,6 @@ class UpdateProjectControllerTest(TestCase):
         self.assertEqual('Project Test 2', update_response_json['project']['name'])
 
     def test_update_project_if_method_not_allowed(self):
-        response = self.client.get('/v1/projects/update/1')
+        response = self.client.get('/api/projects/update/1')
 
         self.assertEqual(response.status_code, 405)

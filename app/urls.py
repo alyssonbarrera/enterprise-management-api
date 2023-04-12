@@ -17,5 +17,5 @@ Including another URLconf
 from django.urls import path, include
 
 urlpatterns = [
-    path('v1/', include('src.shared.infra.http.routes.index')),
+    path('api/', include('src.shared.infra.http.routes.index')),
 ]
