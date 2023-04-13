@@ -65,7 +65,16 @@ class UpdateProjectUseCase:
                         employees_not_found.append(employee_id)
                         continue
 
-                    employees_data.append(employee)
+                    for existing_employee_data in employees_data:
+                        if existing_employee_data['employee'] == employee:
+                            break
+                    else:
+                        hours_available_by_employee = employee_available_work_hours(employee, self.projects_employees_repository)
+
+                        employees_data.append({
+                            'employee': employee, # employee should be an instance of Employee entity
+                            'hours_worked_per_week': hours_available_by_employee
+                        })
 
                 if employees_not_found:
                     raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not found", 404)
@@ -77,11 +86,18 @@ class UpdateProjectUseCase:
 
                 if not supervisor:
                     raise AppError(f'Supervisor with id {data["supervisor"]} not found', 404)
+                
+                hours_available_by_supervisor = employee_available_work_hours(supervisor, self.projects_employees_repository)
+
+                supervisor_project_data = {
+                    'supervisor': supervisor, # supervisor should be an instance of Employee entity
+                    'hours_worked_per_week': hours_available_by_supervisor
+                }
                             
                 if project.supervisor is not None and supervisor.id == project.supervisor.id:
                     raise AppError(f'Supervisor with id {data["supervisor"]} is already the supervisor of this project', 409)
                 
-                supervisor_data = supervisor
+                supervisor_data = supervisor_project_data
                 data['supervisor'] = supervisor
 
             data['updated_at'] = timezone.now()
@@ -90,24 +106,11 @@ class UpdateProjectUseCase:
                 self.projects_employees_repository.delete_employees_from_project(project)
 
                 for employee in employees_data:
-                    hours_available_by_employee = employee_available_work_hours(employee, self.projects_employees_repository)
-                    
-                    employee = {
-                        'employee': employee,
-                        'hours_worked_per_week': hours_available_by_employee
-                    }
 
                     self.projects_employees_repository.add_employee_to_project(project, employee)
 
             if supervisor_data:
-                hours_available_by_supervisor = employee_available_work_hours(supervisor_data, self.projects_employees_repository)
-                
-                supervisor = {
-                    'supervisor': supervisor_data,
-                    'hours_worked_per_week': hours_available_by_supervisor
-                }
-
-                self.projects_employees_repository.replace_supervisor_in_project(project, supervisor)
+                self.projects_employees_repository.replace_supervisor_in_project(project, supervisor_data)
 
             if 'done' in data:
                 if data['done'] == True:

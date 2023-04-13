@@ -1,18 +1,17 @@
 from django.http import JsonResponse
-from src.utils.validator import validator
 from src.shared.errors.AppError import AppError
+from src.utils.uuid_validator import uuid_validator
 from django.views.decorators.http import require_http_methods
+from .make_get_project_use_case import make_get_project_use_case
 from src.shared.errors.AppValidatorError import AppValidatorError
-from .make_find_project_by_criteria_use_case import make_find_project_by_criteria_use_case
-from ...validators.find_project_by_criteria_query_schema import find_project_by_criteria_query_schema
 
 @require_http_methods(['GET'])
-def find_project_by_criteria_controller(request):
+def get_project_controller(request, id):
     try:
-        query = validator(find_project_by_criteria_query_schema, request.GET)
+        id = uuid_validator(id)['id']
 
-        use_case = make_find_project_by_criteria_use_case()
-        project = use_case.execute(query)
+        use_case = make_get_project_use_case()
+        project = use_case.execute(id)
 
         response = {
             'project': project

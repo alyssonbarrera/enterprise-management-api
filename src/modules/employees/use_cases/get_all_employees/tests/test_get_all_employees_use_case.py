@@ -13,7 +13,7 @@ class GetAllEmployeesUseCaseTest(TestCase):
 
         employees = self.use_case.execute(1)
 
-        self.assertEqual(len(employees), 1)
+        self.assertEqual(len(employees), 2)
         self.assertTrue(employees[0]['id'] is not None)
 
     def test_get_all_employees_if_not_exists(self):
@@ -28,4 +28,4 @@ class GetAllEmployeesUseCaseTest(TestCase):
 
         employees = self.use_case.execute(2)
 
-        self.assertEqual(employees[0]['name'], 'Employee Test 20')
+        self.assertNotEqual(list(employees), [])

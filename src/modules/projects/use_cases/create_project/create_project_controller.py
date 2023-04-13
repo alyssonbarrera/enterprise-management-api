@@ -1,8 +1,10 @@
 from django.http import JsonResponse
 from src.utils.validator import validator
 from src.shared.errors.AppError import AppError
+from src.utils.uuid_validator import uuid_validator
 from django.views.decorators.http import require_http_methods
 from src.shared.errors.AppValidatorError import AppValidatorError
+from ...validators.department_id_schema import department_id_schema
 from .make_create_project_use_case import make_create_project_use_case
 from ...validators.project_validation_schema import project_validation_schema
 from src.modules.projects.validators.supervisor_body_schema import supervisor_body_schema
@@ -20,6 +22,9 @@ def create_project_controller(request):
         if 'supervisor' in data:
             data_supervisor = validator(supervisor_body_schema, {'supervisor': data["supervisor"]}, variant="supervisor")
             data["supervisor"] = data_supervisor.get("supervisor")
+
+        department_id = validator(department_id_schema, {'id': data["department"]}, variant="department")['id']
+        data["department"] = department_id
 
         use_case = make_create_project_use_case()
 

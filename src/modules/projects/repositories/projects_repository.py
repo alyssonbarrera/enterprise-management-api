@@ -25,16 +25,6 @@ class ProjectsRepository:
             return Project.objects.get(id=id)
         except ObjectDoesNotExist:
             return None
-        
-    def find_by_criteria(self, criteria):
-        try:
-            project = {}
-            for key, value in criteria.items():
-                project = Project.objects.get(**{key: value})
-                
-            return project
-        except Exception:
-            return None
 
     def get_all(self, page):
         projects = Project.objects.all()[(page - 1) * ITEMS_PER_PAGE:page * ITEMS_PER_PAGE]

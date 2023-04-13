@@ -187,13 +187,14 @@ class UpdateProjectUseCaseTest(TestCase):
         data = create_department_and_employee(8)
         project = create_project()
 
-        employee = data['employee']
+        employee_1 = data['employee']
+        employee_2 = data['employee_2'] # employee_2 has no hours
+
         project_data = {
             'name': 'Project Test 2',
             'description': 'Project Test Description 2',
-            'employees': [employee['id'], employee['id']],
+            'employees': [employee_1['id'], employee_2['id']],
         }
-
 
         with self.assertRaises(Exception) as context:
             self.use_case.execute(project['id'], project_data)
@@ -202,14 +203,18 @@ class UpdateProjectUseCaseTest(TestCase):
     
     def test_update_project_with_supervisor_has_no_hours(self):
         data = create_department_and_employee(9)
+        data_2 = create_department_and_employee(10)
+
         project = create_project()
 
         employee = data['employee']
+        employee_2 = data_2['employee_2'] # employee_2 has no hours
+        
         project_data = {
             'name': 'Project Test 2',
             'description': 'Project Test Description 2',
             'employees': [employee['id']],
-            'supervisor': employee['id'],
+            'supervisor': employee_2['id'],
         }
 
         with self.assertRaises(Exception) as context:

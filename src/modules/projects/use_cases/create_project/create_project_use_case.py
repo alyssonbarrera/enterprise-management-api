@@ -64,7 +64,12 @@ class CreateProjectUseCase:
                         employees_not_found.append(employee_id)
                         continue
 
-                    employees_project_data.append(employee)
+                    hours_available_by_employee = employee_available_work_hours(employee, self.projects_employees_repository)
+
+                    employees_project_data.append({
+                        'employee': employee,
+                        'hours_worked_per_week': hours_available_by_employee
+                    })
 
                 if employees_not_found:
                     raise AppError(f"Employees with ids {', '.join(map(str, employees_not_found))} not founds", 404)
@@ -77,31 +82,25 @@ class CreateProjectUseCase:
                 if not supervisor:
                     raise AppError(f'Supervisor with id {project_data["supervisor"]} not found', 404)
                 
-                supervisor_project_data = supervisor # supervisor should be an instance of Employee entity
+                hours_available_by_supervisor = employee_available_work_hours(supervisor, self.projects_employees_repository)
+
+                supervisor_project_data = {
+                    'supervisor': supervisor, # supervisor should be an instance of Employee entity
+                    'hours_worked_per_week': hours_available_by_supervisor
+                }
+
                 project_data['supervisor'] = supervisor
 
             project = self.projects_repository.create(project_data)
 
             if employees_project_data:
                 for employee in employees_project_data:
-                    hours_available_by_employee = employee_available_work_hours(employee, self.projects_employees_repository)
-
-                    employee_data = {
-                        'employee': employee,
-                        'hours_worked_per_week': hours_available_by_employee
-                    }
                     
-                    self.projects_employees_repository.add_employee_to_project(project, employee_data)
+                    self.projects_employees_repository.add_employee_to_project(project, employee)
 
             if supervisor_project_data:
-                hours_available_by_supervisor = employee_available_work_hours(supervisor_project_data, self.projects_employees_repository)
-
-                supervisor_data = {
-                    'supervisor': supervisor_project_data,
-                    'hours_worked_per_week': hours_available_by_supervisor
-                }
-
-                self.projects_employees_repository.add_supervisor_to_project(project, supervisor_data)
+    
+                self.projects_employees_repository.add_supervisor_to_project(project, supervisor_project_data)
             
             if employees_project_data or supervisor_project_data:
                 calculate_and_update_project_hours(project)

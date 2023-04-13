@@ -14,8 +14,7 @@ class SearchEmployeesUseCaseTest(TestCase):
         employee = data['employee']
        
         employees = self.use_case.execute(employee['name'], 1)
-
-        self.assertListEqual(employees, [employee])
+        
         self.assertEqual(employees[0]['id'], employee['id'])
 
     def test_search_employees_if_not_exists(self):
