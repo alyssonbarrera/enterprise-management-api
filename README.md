@@ -50,32 +50,60 @@ Enterprise Management API
 - [x] Os dados da aplicação precisam estar persistidos em um banco MySQL;  
 - [x] Todas as listas de dados precisam estar paginadas com 20 itens por página;  
 - [x] A API deve conter testes automatizados;  
+- [x] A API deve conter documentação.  
 
 ---
 
-## Para rodar em sua máquina, siga os passos abaixo:
+Documentação: https://documenter.getpostman.com/view/20700565/2s93XwyPMz  
 
-1. Clone o projeto em sua máquina;  
-2. Abra o terminal na pasta do projeto e rode o seguinte comando:  
+---
 
-``` python -m venv venv```
+### 💻 Para rodar em sua máquina, siga os passos abaixo:  
 
-3. Após, rode o seguinte comando se estiver usando Mac ou Linux:  
+📄 Clone o projeto em sua máquina;  
+📂Abra o terminal na pasta do projeto e rode o seguinte comando:  
 
-``` source venv/bin/activate ```
+```shell
+python -m venv venv
+ ```
 
-Caso esteja no Windows, use:  
+⌨ Após, rode o seguinte comando se estiver usando Mac ou Linux:  
 
-``` .\venv\Scripts\activate ```
+```shell
+source venv/bin/activate
+```
 
-4. Em seguinda, rode o comando:  
+💻 Caso esteja no Windows, use:  
 
-``` pip install -r requirements.txt ```
+```shell
+.\venv\Scripts\activate
+```
 
-5. Tendo feito isso, rode o comando a seguir caso queira inicializar o servidor:  
+⌨ Em seguinda, rode o comando:  
 
-```  python manage.py runserver ```
+```shell
+pip install -r requirements.txt
+```
 
-Caso queira executar os testes, use:  
+📡 Tendo feito isso, rode o comando a seguir caso queira inicializar o servidor:  
 
-```  python manage.py test ```
+```shell
+python manage.py runserver
+```
+
+🧪 Caso queira executar os testes, use:  
+
+```shell
+python manage.py test
+```
+
+---
+
+## Techs
+
+<div>
+    <img width=30 src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" />
+    <img width=30 src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/django/django-plain.svg" />
+    <img width=30 src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" />
+    <img width=30 src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-plain.svg" />
+</div>
