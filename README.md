@@ -63,7 +63,7 @@ Documentação: https://documenter.getpostman.com/view/20700565/2s93XwyPMz
 <br/>
 
 📄 Clone o projeto em sua máquina;  
-📂Abra o terminal na pasta do projeto e rode o seguinte comando:  
+📂 Abra o terminal na pasta do projeto e rode o seguinte comando:  
 
 ```shell
 python -m venv venv
@@ -105,6 +105,12 @@ DATABASE_USER=docker
 DATABASE_PASSWORD=docker
 DATABASE_HOST=localhost
 DATABASE_PORT=3306
+```
+
+🌎 Após, será preciso rodar as migrations, então use o comando:
+
+```shell
+python manage.py migrate
 ```
 
 📡 Em seguida, rode o comando a seguir caso queira inicializar o servidor:  
