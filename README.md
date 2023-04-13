@@ -60,6 +60,8 @@ Documentação: https://documenter.getpostman.com/view/20700565/2s93XwyPMz
 
 ### 💻 Para rodar em sua máquina, siga os passos abaixo:  
 
+<br/>
+
 📄 Clone o projeto em sua máquina;  
 📂Abra o terminal na pasta do projeto e rode o seguinte comando:  
 
@@ -85,7 +87,15 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-📡 Tendo feito isso, rode o comando a seguir caso queira inicializar o servidor:  
+🚢 Após, rode o comando:
+
+```shell
+docker-compose up
+```
+
+⏳ Aguarde até que o container esteja em execução;  
+
+📡 Em seguida, rode o comando a seguir caso queira inicializar o servidor:  
 
 ```shell
 python manage.py runserver
