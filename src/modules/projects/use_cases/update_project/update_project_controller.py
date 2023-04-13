@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from src.utils.validator import validator
 from src.shared.errors.AppError import AppError
+from src.utils.uuid_validator import uuid_validator
 from django.views.decorators.http import require_http_methods
 from src.shared.errors.AppValidatorError import AppValidatorError
 from ...validators.project_validation_schema import project_validation_schema
@@ -11,6 +12,8 @@ def update_project_controller(request, id):
     try:
         if not id:
             return JsonResponse({'message': 'Id is required'}, status=400)
+        
+        id = uuid_validator(id)['id']
         
         data = validator(project_validation_schema, request.json, update=True)
 

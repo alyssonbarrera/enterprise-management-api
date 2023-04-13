@@ -5,7 +5,7 @@ class GetAllDepartmentsUseCase:
         self.departments_repository = departments_repository
 
     def execute(self, page=1):
-        departments = self.departments_repository.get_all(page)
+        departments = self.departments_repository.get_all(int(page))
 
         departments_list = []
 

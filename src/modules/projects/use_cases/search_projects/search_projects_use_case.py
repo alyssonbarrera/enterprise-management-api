@@ -5,7 +5,7 @@ class SearchProjectsUseCase:
         self.projects_repository = projects_repository
 
     def execute(self, query, page):
-        projects = self.projects_repository.search(query, page)
+        projects = self.projects_repository.search(query, int(page))
 
         projects_list = []
 

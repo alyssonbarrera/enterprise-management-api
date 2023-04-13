@@ -5,7 +5,7 @@ class SearchDepartmentsUseCase:
         self.departments_repository = departments_repository
 
     def execute(self, query, page):
-        employees = self.departments_repository.search(query, page)
+        employees = self.departments_repository.search(query, int(page))
 
         employees_list = []
 

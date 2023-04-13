@@ -41,22 +41,14 @@ class EmployeesRepository:
             return None
 
     def get_all(self, page):
-        employees = Employee.objects.raw(
-            f'SELECT * FROM src_employee LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
-        )
+        employees = Employee.objects.all()[(page - 1) * ITEMS_PER_PAGE:page * ITEMS_PER_PAGE]
 
-        employee_list = list(employees)
-
-        return employee_list
+        return list(employees)
     
     def search(self, name, page):
-        employees = Employee.objects.raw(
-            f'SELECT * FROM src_employee WHERE name LIKE "%{name}%" LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
-        )
+        employees = Employee.objects.filter(name__icontains=name)[(page - 1) * ITEMS_PER_PAGE:page * ITEMS_PER_PAGE]
 
-        employees_list = list(employees)
-
-        return employees_list
+        return list(employees)
 
     def update(self, employee, data):
         try:

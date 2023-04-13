@@ -5,7 +5,7 @@ class GetAllProjectsUseCase:
         self.projects_repository = projects_repository
 
     def execute(self, page=1):
-        projects = self.projects_repository.get_all(page)
+        projects = self.projects_repository.get_all(int(page))
 
         projects_list = []
 

@@ -5,7 +5,7 @@ class GetAllEmployeesUseCase:
         self.employees_repository = employees_repository
 
     def execute(self, page=1):
-        employees = self.employees_repository.get_all(page)
+        employees = self.employees_repository.get_all(int(page))
 
         employees_list = []
 

@@ -1,5 +1,5 @@
-from src.shared.infra.database.models import Department
 from django.core.exceptions import ObjectDoesNotExist
+from src.shared.infra.database.models import Department
 
 ITEMS_PER_PAGE = 20
 
@@ -17,22 +17,14 @@ class DepartmentsRepository:
             return None
 
     def get_all(self, page):
-        departments = Department.objects.raw(
-            f'SELECT * FROM src_department LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
-        )
+        departments = Department.objects.all()[(page - 1) * ITEMS_PER_PAGE:page * ITEMS_PER_PAGE]
 
-        departments_list = list(departments)
-
-        return departments_list
+        return list(departments)
 
     def search(self, name, page):
-        departments = Department.objects.raw(
-            f'SELECT * FROM src_department WHERE name LIKE "%{name}%" LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
-        )
+        departments = Department.objects.filter(name__icontains=name)[(page - 1) * ITEMS_PER_PAGE:page * ITEMS_PER_PAGE]
 
-        departments_list = list(departments)
-
-        return departments_list
+        return list(departments)
     
     def has_active_employees(self, id):
         department = Department.objects.get(id=id)

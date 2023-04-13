@@ -37,13 +37,9 @@ class ProjectsRepository:
             return None
 
     def get_all(self, page):
-        projects = Project.objects.raw(
-            f'SELECT * FROM src_project LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
-        )
+        projects = Project.objects.all()[(page - 1) * ITEMS_PER_PAGE:page * ITEMS_PER_PAGE]
 
-        projects_list = list(projects)
-
-        return projects_list
+        return list(projects)
     
     def project_already_exists_in_department(self, project_name):
         try:
@@ -54,14 +50,10 @@ class ProjectsRepository:
             return None
     
     def search(self, name, page):
-        projects = Project.objects.raw(
-            f'SELECT * FROM src_project WHERE name LIKE "%{name}%" LIMIT {ITEMS_PER_PAGE} OFFSET {(page - 1) * ITEMS_PER_PAGE}'
-        )
+        projects = Project.objects.filter(name__icontains=name)[(page - 1) * ITEMS_PER_PAGE:page * ITEMS_PER_PAGE]
 
-        projects_list = list(projects)
+        return list(projects)
 
-        return projects_list
-    
     def update(self, project, data):
         try:            
             for key, value in data.items():
