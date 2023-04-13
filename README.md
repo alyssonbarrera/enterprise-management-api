@@ -95,6 +95,18 @@ docker-compose up
 
 ⏳ Aguarde até que o container esteja em execução;  
 
+🔐 Antes de prosseguir, é necessário criar o arquivo .env na raiz do projeto;  
+
+📄 Uma vez criado, ele deverá conter:
+
+```
+DATABASE_NAME=database
+DATABASE_USER=docker
+DATABASE_PASSWORD=docker
+DATABASE_HOST=localhost
+DATABASE_PORT=3306
+```
+
 📡 Em seguida, rode o comando a seguir caso queira inicializar o servidor:  
 
 ```shell
