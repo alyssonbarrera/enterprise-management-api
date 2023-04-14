@@ -54,7 +54,7 @@ Enterprise Management API
 
 ---
 
-Documentação: https://documenter.getpostman.com/view/20700565/2s93XwyPMz  
+Documentação: https://documenter.getpostman.com/view/20700565/2s93Xx1jaa
 
 ---
 
