@@ -15,7 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path, include
+from django.shortcuts import render
 
 urlpatterns = [
+    path('', lambda request: render(request, 'index.html')),
     path('api/', include('src.shared.infra.http.routes.index')),
 ]

@@ -63,39 +63,8 @@ Documentação: https://documenter.getpostman.com/view/20700565/2s93XwyPMz
 <br/>
 
 📄 Clone o projeto em sua máquina;  
-📂 Abra o terminal na pasta do projeto e rode o seguinte comando:  
 
-```shell
-python -m venv venv
- ```
-
-⌨ Após, rode o seguinte comando se estiver usando Mac ou Linux:  
-
-```shell
-source venv/bin/activate
-```
-
-💻 Caso esteja no Windows, use:  
-
-```shell
-.\venv\Scripts\activate
-```
-
-⌨ Em seguinda, rode o comando:  
-
-```shell
-pip install -r requirements.txt
-```
-
-🚢 Após, rode o comando:
-
-```shell
-docker-compose up
-```
-
-⏳ Aguarde até que o container esteja em execução;  
-
-🔐 Antes de prosseguir, é necessário criar o arquivo .env na raiz do projeto;  
+🔐 Tendo feito isso, entre na pasta do projeto e crie o arquivo .env;  
 
 📄 Uma vez criado, ele deverá conter:
 
@@ -103,20 +72,22 @@ docker-compose up
 DATABASE_NAME=database
 DATABASE_USER=docker
 DATABASE_PASSWORD=docker
-DATABASE_HOST=localhost
+DATABASE_HOST=db_api_enterprise_management
 DATABASE_PORT=3306
 ```
 
-🌎 Após, será preciso rodar as migrations, então use o comando:
+📂 Em seguinda, abra o terminal na pasta do projeto e rode o seguinte comando:  
 
 ```shell
-python manage.py migrate
-```
+docker compose up
+ ```
 
-📡 Em seguida, rode o comando a seguir caso queira inicializar o servidor:  
+⏳ Aguarde até que os containers estejam em execução;
 
-```shell
-python manage.py runserver
+📡 Com os containers prontos, você poderá acessar o servidor usando:
+
+```text
+http://localhost:8000
 ```
 
 🧪 Caso queira executar os testes, use:  

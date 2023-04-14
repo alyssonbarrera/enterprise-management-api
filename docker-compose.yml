@@ -1,7 +1,8 @@
 version: '3'
 
 services:
-  api_enterprise_management:
+  db_api_enterprise_management:
+    container_name: db_api_enterprise_management
     image: bitnami/mysql:latest
     ports:
       - 3306:3306
@@ -10,3 +11,22 @@ services:
       - MYSQL_PASSWORD=docker
       - MYSQL_DATABASE=database
       - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 20s
+      timeout: 10s
+      retries: 5
+
+  app_api_enterprise_management:
+    container_name: app_api_enterprise_management
+    build: .
+    command: sh -c "python manage.py migrate && gunicorn --config gunicorn.conf.py --reload app.wsgi:application"
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/usr/app
+    links:
+      - db_api_enterprise_management
+    depends_on:
+      db_api_enterprise_management:
+        condition: service_healthy
