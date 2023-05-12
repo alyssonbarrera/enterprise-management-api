@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-6ue@#a*d3avw4nspd=-66!7ic4c7t$rqf81v*4=isdfhpavksn'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -53,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'src.shared.infra.http.middlewares.json_parser_middleware.JsonParserMiddleware',
+    'src.shared.infra.http.middlewares.error_handler_middleware.ErrorHandlerMiddleware'
 ]
 
 ROOT_URLCONF = 'app.urls'

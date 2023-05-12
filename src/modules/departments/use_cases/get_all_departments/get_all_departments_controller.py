@@ -6,14 +6,12 @@ from src.modules.departments.use_cases.get_all_departments.make_get_all_departme
 def get_all_departments_controller(request):
     page = request.GET.get('page', 1) or 1
 
-    try:
-        use_case = make_get_all_departments_use_case()
-        departments = use_case.execute(page)
+    use_case = make_get_all_departments_use_case()
 
-        response = {
-            'departments': departments,
-        }
+    departments = use_case.execute(page)
 
-        return JsonResponse(response, status=200)
-    except:
-        return JsonResponse({'message': 'Internal server error'}, status=500)
+    response = {
+        'departments': departments,
+    }
+
+    return JsonResponse(response, status=200)

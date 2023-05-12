@@ -1,9 +1,7 @@
 from django.http import JsonResponse
 from src.utils.validator import validator
-from src.shared.errors.AppError import AppError
 from src.utils.uuid_validator import uuid_validator
 from django.views.decorators.http import require_http_methods
-from src.shared.errors.AppValidatorError import AppValidatorError
 from ...validators.project_validation_schema import project_validation_schema
 from ...validators.department_id_schema import department_id_schema
 from src.modules.projects.validators.supervisor_body_schema import supervisor_body_schema
@@ -12,36 +10,31 @@ from src.modules.projects.validators.add_and_remove_employees_body_schema import
 
 @require_http_methods(['PUT'])
 def update_project_controller(request, id):
-    try:
-        if not id:
-            return JsonResponse({'message': 'Id is required'}, status=400)
-        
-        id = uuid_validator(id)['id']
+    if not id:
+        return JsonResponse({'message': 'Id is required'}, status=400)
+    
+    id = uuid_validator(id)['id']
 
-        data = validator(project_validation_schema, request.json, update=True)
+    data = validator(project_validation_schema, request.json, update=True)
 
-        if "employees" in data:
-            data_employees = validator(add_and_remove_employees_body_schema, {'employees': data["employees"]}, variant="list_employees")
-            data["employees"] = data_employees.get("employees")
-        
-        if 'supervisor' in data:
-            data_supervisor = validator(supervisor_body_schema, {'supervisor': data["supervisor"]}, variant="supervisor")
-            data["supervisor"] = data_supervisor.get("supervisor")
+    if "employees" in data:
+        data_employees = validator(add_and_remove_employees_body_schema, {'employees': data["employees"]}, variant="list_employees")
+        data["employees"] = data_employees.get("employees")
+    
+    if 'supervisor' in data:
+        data_supervisor = validator(supervisor_body_schema, {'supervisor': data["supervisor"]}, variant="supervisor")
+        data["supervisor"] = data_supervisor.get("supervisor")
 
-        if 'department' in data:
-            department_id = validator(department_id_schema, {'id': data["department"]}, variant="department")['id']
-            data["department"] = department_id
+    if 'department' in data:
+        department_id = validator(department_id_schema, {'id': data["department"]}, variant="department")['id']
+        data["department"] = department_id
 
-        use_case = make_update_project_use_case()
+    use_case = make_update_project_use_case()
 
-        project = use_case.execute(id, data)
+    project = use_case.execute(id, data)
 
-        response = {
-            'project': project
-        }
+    response = {
+        'project': project
+    }
 
-        return JsonResponse(response, status=200)
-    except Exception as error:
-        if isinstance(error, AppError) or isinstance(error, AppValidatorError):
-            return JsonResponse({'message': error.message}, status=error.statusCode)
-        return JsonResponse({'message': 'Internal server error'}, status=500)
+    return JsonResponse(response, status=200)

@@ -4,17 +4,16 @@ from .make_search_projects_use_case import make_search_projects_use_case
 
 @require_http_methods(['GET'])
 def search_projects_controller(request):
-    try:
-        query = request.GET.get('query')
-        page = request.GET.get('page', 1) or 1
+    query = request.GET.get('query')
 
-        use_case = make_search_projects_use_case()
-        projects = use_case.execute(query, page)
+    page = request.GET.get('page', 1) or 1
 
-        response = {
-            'projects': projects
-        }
+    use_case = make_search_projects_use_case()
 
-        return JsonResponse(response, status=200)
-    except:
-        return JsonResponse({'message': 'Internal server error'}, status=500)
+    projects = use_case.execute(query, page)
+
+    response = {
+        'projects': projects
+    }
+    
+    return JsonResponse(response, status=200)

@@ -4,17 +4,16 @@ from src.modules.departments.use_cases.search_departments.make_search_department
 
 @require_http_methods(['GET'])
 def search_departments_controller(request):
-    try:
-        query = request.GET.get('query')
-        page = request.GET.get('page', 1) or 1
+    query = request.GET.get('query')
 
-        use_case = make_search_departments_use_case()
-        departments = use_case.execute(query, page)
+    page = request.GET.get('page', 1) or 1
 
-        response = {
-            'departments': departments
-        }
+    use_case = make_search_departments_use_case()
 
-        return JsonResponse(response, safe=False)
-    except:
-        return JsonResponse({'message': 'Internal server error'}, status=500)
+    departments = use_case.execute(query, page)
+
+    response = {
+        'departments': departments
+    }
+    
+    return JsonResponse(response, safe=False)

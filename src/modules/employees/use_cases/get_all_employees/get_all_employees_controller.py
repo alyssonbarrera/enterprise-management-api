@@ -6,14 +6,12 @@ from .make_get_all_employees_use_case import make_get_all_employees_use_case
 def get_all_employees_controller(request):
     page = request.GET.get('page', 1) or 1
 
-    try:
-        use_case = make_get_all_employees_use_case()
-        employees = use_case.execute(page)
+    use_case = make_get_all_employees_use_case()
 
-        response = {
-            'employees': employees,
-        }
+    employees = use_case.execute(page)
 
-        return JsonResponse(response, status=200)
-    except:
-        return JsonResponse({'message': 'Internal server error'}, status=500)
+    response = {
+        'employees': employees,
+    }
+    
+    return JsonResponse(response, status=200)

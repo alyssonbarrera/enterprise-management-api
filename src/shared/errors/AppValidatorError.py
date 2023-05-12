@@ -4,7 +4,7 @@ class AppValidatorError(Exception):
             'validation_error': message,
         }
 
-        self.statusCode = 400
+        self.status_code = 400
 
     def __str__(self):
-        return f"ValidationError: {self.message} (code: {self.statusCode})"
+        return f"ValidationError: {self.message} (code: {self.status_code})"

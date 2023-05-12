@@ -4,17 +4,16 @@ from src.modules.employees.use_cases.search_employees.make_search_employees_use_
 
 @require_http_methods(['GET'])
 def search_employees_controller(request):
-    try:
-        query = request.GET.get('query')
-        page = request.GET.get('page', 1) or 1
+    query = request.GET.get('query')
 
-        use_case = make_search_employees_use_case()
-        employees = use_case.execute(query, page)
+    page = request.GET.get('page', 1) or 1
 
-        response = {
-            'employees': employees
-        }
+    use_case = make_search_employees_use_case()
 
-        return JsonResponse(response, status=200)
-    except:
-        return JsonResponse({'message': 'Internal server error'}, status=500)
+    employees = use_case.execute(query, page)
+
+    response = {
+        'employees': employees
+    }
+
+    return JsonResponse(response, status=200)

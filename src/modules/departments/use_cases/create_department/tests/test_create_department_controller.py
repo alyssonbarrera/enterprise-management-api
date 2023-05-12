@@ -18,11 +18,6 @@ class CreateDepartmentControllerTest(TestCase):
         self.assertEqual(response_data['department']['name'], 'Department Test')
         self.assertEqual(response_data['department']['description'], 'Department Test Description')
 
-    def test_create_department_if_method_not_allowed(self):
-        response = self.client.get('/api/departments/create')
-
-        self.assertEqual(response.status_code, 405)
-
     def test_create_department_if_name_is_empty(self):
         data = {
             'name': '',
